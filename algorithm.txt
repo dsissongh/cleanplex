@@ -1,0 +1,22 @@
+
+Capabilities
+read alll files\directories in a given path
+assume root path has only directories in it
+move files in root to <show title>\<show season>
+determine what type of object the file object is (file or directory or directory that is not a show directory)
+find any duplicates and flag
+find files that are not media files
+
+Construction
+-file
+-show directory
+-file directory
+-season
+-show
+-duplicate
+-accepted file types
+
+
+Process
+-Get List of Objects in the root
+	We need this to help find the shows we have available later.  Might write this to use the Plex API, but thats a little much for me right now

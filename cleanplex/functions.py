@@ -24,6 +24,7 @@ def getlistoffileitems(rootpath):
 	max = int(len(fileitems))
 	pbar = ProgressBar()
 	print("Scanning root directory")
+	quickrun = 0 # remove later
 	for item in pbar(fileitems):
 		if os.path.isdir(rootpath + "\\" + item):
 			isshow = False
@@ -36,5 +37,26 @@ def getlistoffileitems(rootpath):
 				shows.append(item)
 			else:
 				nonshows.append(item)
+			quickrun += 1
+			if quickrun > 10000:
+				break
 
 	return shows, nonshows		
+
+def getmediafile(rootpath, fileitem, acceptedfiletypes, disallowed):
+	'''
+	returns list of files matching filetypes
+	excludes anything with sample in it
+	'''
+	rfiles = []
+	files = os.listdir(rootpath + "\\" + fileitem)
+	for file in files:
+		skip = False
+		if file[-3:] in acceptedfiletypes:
+			for notinit in disallowed:
+				if notinit in file.lower():
+					skip = True
+			if not skip:
+				rfiles.append(file)
+
+	return rfiles

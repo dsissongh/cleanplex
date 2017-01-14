@@ -17,4 +17,3 @@ def set_properties(project):
     project.set_property("dir_source_main_python", "scripts")
     project.set_property("dir_source_unittest_python", "tests")
     project.set_property("dir_source_main_scripts", "cleanplex")
-

@@ -1,3 +1,4 @@
+
 import os
 from configparser import SafeConfigParser 
 from media import Media
@@ -9,4 +10,8 @@ config = SafeConfigParser()
 config.read('cleanplex\\config.cfg')
 
 rootpath = confighelper(config, 'rootpath')
-getlistoffileitems(rootpath)
+showitems, nonshowitems = getlistoffileitems(rootpath)
+
+#print(showitems)
+print(len(showitems))
+print(len(nonshowitems))

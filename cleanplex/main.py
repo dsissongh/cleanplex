@@ -3,7 +3,7 @@ import os
 import shutil
 from configparser import SafeConfigParser 
 from progressbar import ProgressBar
-from media import Media
+#from media import Media
 from functions import confighelper
 from functions import getlistoffileitems
 from functions import getmediafile
@@ -17,7 +17,7 @@ config.read('cleanplex\\config.cfg')
 
 #get shows as well as extraneous files/dirs that were not put in subdirs correctly
 rootpath = confighelper(config, 'rootpath')
-showitems, nonshowitems = getlistoffileitems(rootpath)
+showitems, nonshowitems, deldirs = getlistoffileitems(rootpath)
 
 filetypes = confighelper(config, 'filetypes')
 sdisallowed = confighelper(config, 'disallowedstrings')
@@ -114,10 +114,16 @@ for item in pbar(nonshowitems):
 				os.remove(source)
 
 	fileinfo = []		
-fh.close()	
+fh.close()
+print("Dirs removed: " + str(len(deldirs)))
 
-print(str(countshowmove) + ":" + str(len(nonshowitems) - countshowunfound))
-print("\n")
-print(move)
-print("\n")
-print(createsubdir)
+#now remove empty directories	
+for dir in deldirs:
+	try:
+		shutil.rmtree(dir)
+	except:
+		print("Unable to remove " + dir)
+		exit()
+
+print("Shows moved: " + str(move))
+print("Dirs created: " + str(createsubdir))

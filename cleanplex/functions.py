@@ -1,4 +1,5 @@
 import os
+import shutil
 import re
 from progressbar import ProgressBar
 
@@ -20,32 +21,58 @@ def getlistoffileitems(rootpath):
 	'''
 	shows = []
 	nonshows = []
+	dirtodel = []
 	fileitems  = os.listdir(rootpath)
 	fileitems.sort()
 	max = int(len(fileitems))
 	pbar = ProgressBar()
 	print("Scanning root directory")
 	quickrun = 0 # remove later
-	#fh = open("filestodelete.txt","w")
+	fh = open("filestodelete.txt","w")
+	fh2 = open("showfiles.txt", "w")
+
+	#looping through root directory
 	for item in pbar(fileitems):
-		if os.path.isdir(rootpath + "\\" + item):
-			isshow = False
-			subfileitems = os.listdir(rootpath + "\\" + item)
-			for subfileitem in subfileitems:
-				if "season" in subfileitem.lower():
-					isshow = True
+		if item[0:8] != "_UNPACK_":
+			if os.path.isdir(rootpath + "\\" + item):
+				isshow = False
+				numfiles = 0
+				subfileitems = os.listdir(rootpath + "\\" + item)
+				if numfiles == 0:
+					numfiles = len(subfileitems)
+					if  numfiles == 0:
+						dirtodel.append(rootpath + item)
 
-			if (isshow):
-				shows.append(item)
-			else:
-				nonshows.append(item)
-				#fh.write(item + "\n")
-			quickrun += 1
-			if quickrun > 10000:
-				break
+				#loop through directory and check all files
+				#for "Season" indicating a show dir
+				for subfileitem in subfileitems:
+					if "season" in subfileitem.lower():
+						isshow = True
 
-	#fh.close()			
-	return shows, nonshows		
+				if (isshow):
+					shows.append(item)
+					fh2.write(item)
+					fh2.write("\n")
+				else:
+					nonshows.append(item)
+					fh.write(rootpath + item + "\\\\" + subfileitem)
+					fh.write("\n")
+					fh.write(str(numfiles))
+					fh.write("\n")
+
+				if numfiles == 0:
+					fh2.write("DEL: " + rootpath + item)
+
+				subfileitem = ""
+
+				#some code to shorten test time
+				quickrun += 1
+				if quickrun > 10000:
+					break
+
+	fh2.close()
+	fh.close()			
+	return shows, nonshows, dirtodel		
 
 
 def getmediafile(rootpath, fileitem, acceptedfiletypes, disallowed):

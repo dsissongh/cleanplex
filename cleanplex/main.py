@@ -115,6 +115,14 @@ for item in pbar(nonshowitems):
 
 	fileinfo = []		
 fh.close()
+
+#Lets go back through and clean out the directories in the root
+#print(nonshowitems)
+for directory in nonshowitems:
+	print(directory)
+
+
+
 print("Dirs removed: " + str(len(deldirs)))
 
 #now remove empty directories	

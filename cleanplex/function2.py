@@ -14,7 +14,7 @@ def getlistoffileitems(rootpath):
 
 	showdirectories = []
 	scrapdirectories = []
-	undesired = ['__unpack__', 'thumbs.db']
+	undesired = ['_unpack_', 'thumbs.db']
 
 	print("Scanning the root directory...")
 
@@ -28,7 +28,13 @@ def getlistoffileitems(rootpath):
 	for item in pbar(fileitems):
 		##count += 1
 
-		if item.lower() not in undesired:
+		#check if any undesired elements are in the item
+		safe = True
+		for notin in undesired:
+			if notin in item.lower():
+				safe = False
+
+		if safe:
 			#print(item)
 			subitems = os.listdir(rootpath + item)
 
@@ -47,3 +53,20 @@ def getlistoffileitems(rootpath):
 		#	break				
 			
 	return showdirectories, scrapdirectories
+
+
+def interrogatedirectory(extensionlist, path, nonshow):
+	'''
+	loop through files in the directory and sort into two lists
+	based on extension list
+	'''
+	show = []
+	noshow = []
+	directory = os.listdir(path + nonshow)
+	for item in directory:
+		if item[-3:] in extensionlist:
+			show.append(item)
+		else:
+			noshow.append(item)
+
+	return show, noshow

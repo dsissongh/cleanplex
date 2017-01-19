@@ -93,3 +93,12 @@ def getmediainfo(fileitem):
                 return tv
             else:
                 return []
+
+
+def fixseason(season):
+    	newseason = ""
+    	if season[0] == "0":
+        		newseason = season[1:]
+    	else:
+        		newseason = season
+    	return newseason                

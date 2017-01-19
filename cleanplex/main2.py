@@ -5,6 +5,7 @@ from function2 import confighelper
 from function2 import getlistoffileitems
 from function2 import interrogatedirectory
 from function2 import getmediainfo
+from function2 import fixseason
 
 #setup the config object
 config = SafeConfigParser()
@@ -24,24 +25,31 @@ showdirs, nonshowdirs = getlistoffileitems(rootpath)
 #- lastly, remove scrap directory
 count = 0
 for nonshow in nonshowdirs:
-	print(80*"-")
+	
 
-	print(nonshow.encode("utf-8"))
+	##print(nonshow.encode("utf-8"))
 
 	#get list of accepted and rejected files from given directory
 	accepted, rejected = interrogatedirectory(filetypes, rootpath, nonshow)
-	print(accepted)
-	print(40*"*")
+	##print(accepted)
+	##print(40*"*")
 	for show in accepted:
 		info = []
-		print(show)
+		##print(show)
 		#lets get the media info for each file
 		#sub 0 = filename
 		#sub 1 = full path and filename
-		print(show[0])
+		##print(show[0])
 		info = getmediainfo(show[0])
 		if len(info) > 0:
+			print(80*"-")
+			#this means there is media info returned
+			print(show[1])
 			print(info)
+			season = info[0][1]
+			season = fixseason(season)
+
+
 		'''
 		print(len(accepted))
 		print(len(info))

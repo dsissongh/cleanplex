@@ -18,14 +18,21 @@ filetypes = confighelper(config, 'filetypes')
 #get directories sorted as show and non show items
 showdirs, nonshowdirs = getlistoffileitems(rootpath)
 
+#log file
+fh = open('2-del.log',"w")
+fh2 = open('2-noshow.log', 'w')
 
 #manage scrap dir entries
 #- move allowed file types to proper subdirectory
 #- remove disallowed file types 
 #- lastly, remove scrap directory
 count = 0
+
+#new extensions
+newextensions = []
 for nonshow in nonshowdirs:
-	
+	fh.write(nonshow)
+	fh.write("\n")
 
 	##print(nonshow.encode("utf-8"))
 
@@ -33,6 +40,16 @@ for nonshow in nonshowdirs:
 	accepted, rejected = interrogatedirectory(filetypes, rootpath, nonshow)
 	##print(accepted)
 	##print(40*"*")
+
+	#Lets see the rejected files first
+	fh2.write(str(rejected))
+	fh2.write("\n")
+
+	if len(rejected) > 1:
+		newextensions.append(rejected[0][1][-3:])
+
+'''
+	exit()
 	for show in accepted:
 		info = []
 		##print(show)
@@ -48,16 +65,21 @@ for nonshow in nonshowdirs:
 			print(info)
 			season = info[0][1]
 			season = fixseason(season)
+		else:
+			fh.write("----")
+			fh.write(show[0])
+			fh.write("\n")
 
 
-		'''
+		# ----
 		print(len(accepted))
 		print(len(info))
 		if len(accepted) > 0:	
 			print("ACC: " + accepted[0][0])
 		if len(info) > 0:
 			print("INF: " + info)
-		'''	
+		# ----
+			
 
 	count += 1
 	if count > 5:
@@ -69,3 +91,11 @@ for nonshow in nonshowdirs:
 
 print("Show directories: %d" % len(showdirs))
 print("Non show directories: %d" % len(nonshowdirs))
+'''
+
+fh2.close()
+fh.close()
+
+newextensions = list(set(newextensions))
+newextensions.sort()
+print(newextensions)

@@ -1,6 +1,7 @@
 import os
 import shutil
 from configparser import SafeConfigParser 
+from progressbar import ProgressBar
 from function2 import confighelper
 from function2 import getlistoffileitems
 from function2 import interrogatedirectory
@@ -28,9 +29,14 @@ fh2 = open('2-noshow.log', 'w')
 #- lastly, remove scrap directory
 count = 0
 
+#progress object
+pbar = ProgressBar()
+
 #new extensions
 newextensions = []
-for nonshow in nonshowdirs:
+
+print("Enumerating non show items...")
+for nonshow in pbar(nonshowdirs):
 	fh.write(nonshow)
 	fh.write("\n")
 
@@ -38,8 +44,6 @@ for nonshow in nonshowdirs:
 
 	#get list of accepted and rejected files from given directory
 	accepted, rejected = interrogatedirectory(filetypes, rootpath, nonshow)
-	##print(accepted)
-	##print(40*"*")
 
 	#Lets see the rejected files first
 	fh2.write(str(rejected))
@@ -48,6 +52,35 @@ for nonshow in nonshowdirs:
 	if len(rejected) > 1:
 		newextensions.append(rejected[0][1][-3:])
 
+newextensions = list(set(newextensions))
+print("Would you like to process (delete) files with these extensions? (y/n):\n")
+yesno = input(newextensions)
+
+if yesno == 'y':
+	#if yes, we are going to get file sizes and delete all files as well as report how much space we are reclaiming
+	pbar2 = ProgressBar()
+	filecount = 0
+	filesizetotal = 0
+	for  f2d in pbar2(nonshowdirs):
+		#get list of accepted and rejected files from given directory
+		accepted2, rejected2 = interrogatedirectory(filetypes, rootpath, f2d)
+		print(f2d + "\n")
+		#print(rejected)
+		for item in rejected2:
+			print(item)
+			filesizetotal += os.path.getsize(item[1])
+		filecount += 1
+
+	print(str(filecount) + "\n")
+	filesizetotal = filesizetotal/1000000000
+	print('{:.2f}'.format(filesizetotal))
+	print("\n")
+
+else:
+	print("no")
+	exit()
+
+exit()
 '''
 	exit()
 	for show in accepted:

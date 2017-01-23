@@ -68,11 +68,22 @@ if yesno == 'y':
 		#print(rejected)
 		for item in rejected2:
 			print(item)
-			filesizetotal += os.path.getsize(item[1])
+			try:
+				filesizetotal += os.path.getsize(item[1])
+				os.remove(item[1])
+			except:
+				print("Unable to delete " + item[1])
+
 		filecount += 1
+
+		try:
+			os.rmdir(rootpath + f2d)
+		except:
+			print("Unable to remove " + f2d)
 
 	print(str(filecount) + "\n")
 	filesizetotal = filesizetotal/1000000000
+	#2 points after the decimal
 	print('{:.2f}'.format(filesizetotal))
 	print("\n")
 

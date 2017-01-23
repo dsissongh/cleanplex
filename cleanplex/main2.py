@@ -15,6 +15,7 @@ config.read('cleanplex\\config.cfg')
 #get shows as well as extraneous files/dirs that were not put in subdirs correctly
 rootpath = confighelper(config, 'rootpath')
 filetypes = confighelper(config, 'filetypes')
+disallowedstrings = confighelper(config,'disallowedstrings')
 
 #get directories sorted as show and non show items
 showdirs, nonshowdirs = getlistoffileitems(rootpath)
@@ -22,6 +23,7 @@ showdirs, nonshowdirs = getlistoffileitems(rootpath)
 #log file
 fh = open('2-del.log',"w")
 fh2 = open('2-noshow.log', 'w')
+fh3 = open('missinginfo.txt', 'w')
 
 #manage scrap dir entries
 #- move allowed file types to proper subdirectory
@@ -61,25 +63,51 @@ if yesno == 'y':
 	pbar2 = ProgressBar()
 	filecount = 0
 	filesizetotal = 0
+	print("Iterating through files...")
 	for  f2d in pbar2(nonshowdirs):
 		#get list of accepted and rejected files from given directory
 		accepted2, rejected2 = interrogatedirectory(filetypes, rootpath, f2d)
-		print(f2d + "\n")
+		##print(f2d + "\n")
 		#print(rejected)
 		for item in rejected2:
-			print(item)
+			#print(item)
 			try:
 				filesizetotal += os.path.getsize(item[1])
 				os.remove(item[1])
 			except:
-				print("Unable to delete " + item[1])
+				pass
+				#print("Unable to delete " + item[1])
 
 		filecount += 1
+
+		for item2 in accepted2:
+			#print(item2)
+			info = []
+
+			skip = False #dont skip this file
+			for dstring in disallowedstrings:
+				if dstring in item2[0].lower():
+					skip = True
+					fh3.write("DELETE: ")
+					fh3.write(item2[0])
+					fh3.write("\n")
+
+			if not skip:
+				info = getmediainfo(item2[0])
+				print(str(info))
+				print(len(info))
+				if len(info) == 0:
+					fh3.write(item2[0])
+					fh3.write("\n")
+
+
+
 
 		try:
 			os.rmdir(rootpath + f2d)
 		except:
-			print("Unable to remove " + f2d)
+			pass
+			#print("Unable to remove " + f2d)
 
 	print(str(filecount) + "\n")
 	filesizetotal = filesizetotal/1000000000
@@ -91,9 +119,13 @@ else:
 	print("no")
 	exit()
 
-exit()
+#at this point, we have removed the empty directories and rejected files
+
 '''
-	exit()
+for show in showdirs:
+	print(show)
+
+
 	for show in accepted:
 		info = []
 		##print(show)
@@ -137,9 +169,7 @@ print("Show directories: %d" % len(showdirs))
 print("Non show directories: %d" % len(nonshowdirs))
 '''
 
+fh3.close()
 fh2.close()
 fh.close()
 
-newextensions = list(set(newextensions))
-newextensions.sort()
-print(newextensions)

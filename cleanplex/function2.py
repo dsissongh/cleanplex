@@ -102,3 +102,22 @@ def fixseason(season):
     	else:
         		newseason = season
     	return newseason                
+
+
+def getlistofpossibletitles(fileitem):
+    """
+        Create list of possible names for the directory based on the original filename
+
+        Args:
+            fileitem    - title of the media item.  Used to determine what show is in the subdirectory
+            shows       - List of all the media directories (which should represent shows)
+        Returns:
+            A python list of possible media directory names.
+    """
+    title = []
+    title.append(fileitem)
+    lookfor = fileitem.replace("."," ")
+    title.append(lookfor)
+    lookfor = fileitem.replace('-'," ")
+    title.append(lookfor)
+    return title

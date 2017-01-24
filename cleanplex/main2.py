@@ -7,10 +7,18 @@ from function2 import getlistoffileitems
 from function2 import interrogatedirectory
 from function2 import getmediainfo
 from function2 import fixseason
+from function2 import getlistofpossibletitles
 
 #setup the config object
 config = SafeConfigParser()
 config.read('cleanplex\\config.cfg')
+
+#load oddtitles
+for line in open("cleanplex\\oddtitles.txt",'r'):
+	print(line)
+
+exit()
+
 
 #get shows as well as extraneous files/dirs that were not put in subdirs correctly
 rootpath = confighelper(config, 'rootpath')
@@ -93,10 +101,10 @@ if yesno == 'y':
 
 					try:
 						os.remove(item2[1])
-					else:
+					except:
 						fhdel.write("Could not delete " + item2[1])
 						fhdel.write("\n")
-						
+
 					break
 
 			if not skip:
@@ -108,8 +116,37 @@ if yesno == 'y':
 					fh3.write(item2[0])
 					fh3.write("\n")
 				else:
+					#we get here, we have a show file and meta info
+					print(item2[1])				
 					print(str(info))
-					print(len(info))
+					'''
+					-get possible titles
+					-get show directory
+					-check if season exists
+
+					'''
+					possibletitles = getlistofpossibletitles(info[0][0])
+					titlefound = False
+					print(possibletitles)
+					for title in possibletitles:
+						if os.path.isdir(rootpath + title):
+							print(title)
+							realtitle = title
+							titlefound = True
+							break
+
+					if titlefound:
+						season = fixseason(info[0][1])
+						if os.path.isdir(rootpath + title + "\\season " + season):		
+							print("path exists")
+						else:
+							print("need to create season dir")
+							os.makedirs(rootpath + title + "\\season " + season)
+							exit()
+					else:
+						print("title not found")
+						exit()
+
 
 
 		try:

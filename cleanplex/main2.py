@@ -16,6 +16,7 @@ config.read('cleanplex\\config.cfg')
 rootpath = confighelper(config, 'rootpath')
 filetypes = confighelper(config, 'filetypes')
 disallowedstrings = confighelper(config,'disallowedstrings')
+disallowedstrings = disallowedstrings.split(',')
 
 #get directories sorted as show and non show items
 showdirs, nonshowdirs = getlistoffileitems(rootpath)
@@ -23,6 +24,7 @@ showdirs, nonshowdirs = getlistoffileitems(rootpath)
 #log file
 fh = open('2-del.log',"w")
 fh2 = open('2-noshow.log', 'w')
+fhdel = open("deletefiles.log", 'w')
 fh3 = open('missinginfo.txt', 'w')
 
 #manage scrap dir entries
@@ -83,24 +85,31 @@ if yesno == 'y':
 		for item2 in accepted2:
 			#print(item2)
 			info = []
-
+			
 			skip = False #dont skip this file
 			for dstring in disallowedstrings:
 				if dstring in item2[0].lower():
 					skip = True
-					fh3.write("DELETE: ")
-					fh3.write(item2[0])
-					fh3.write("\n")
+
+					try:
+						os.remove(item2[1])
+					else:
+						fhdel.write("Could not delete " + item2[1])
+						fhdel.write("\n")
+						
+					break
 
 			if not skip:
 				info = getmediainfo(item2[0])
-				print(str(info))
-				print(len(info))
+				#print(str(info))
+				#print(len(info))
 				if len(info) == 0:
+					fh3.write("NO META: ")
 					fh3.write(item2[0])
 					fh3.write("\n")
-
-
+				else:
+					print(str(info))
+					print(len(info))
 
 
 		try:
@@ -169,6 +178,7 @@ print("Show directories: %d" % len(showdirs))
 print("Non show directories: %d" % len(nonshowdirs))
 '''
 
+fhdel.close()
 fh3.close()
 fh2.close()
 fh.close()

@@ -104,7 +104,7 @@ def fixseason(season):
     	return newseason                
 
 
-def getlistofpossibletitles(fileitem):
+def getlistofpossibletitles(fileitem, oddtitles):
     """
         Create list of possible names for the directory based on the original filename
 
@@ -115,9 +115,16 @@ def getlistofpossibletitles(fileitem):
             A python list of possible media directory names.
     """
     title = []
+    myvalue = ""
     title.append(fileitem)
     lookfor = fileitem.replace("."," ")
     title.append(lookfor)
     lookfor = fileitem.replace('-'," ")
     title.append(lookfor)
+
+    #add oddtitles to possible list
+    if fileitem.lower() in oddtitles:
+        myvalue = oddtitles[fileitem.lower()]    
+        title.append(myvalue)
+
     return title

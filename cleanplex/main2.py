@@ -14,11 +14,11 @@ config = SafeConfigParser()
 config.read('cleanplex\\config.cfg')
 
 #load oddtitles
+oddtitles = {}
 for line in open("cleanplex\\oddtitles.txt",'r'):
-	print(line)
-
-exit()
-
+	key,value = line.split(',')
+	value = value.replace("\n", "")
+	oddtitles.update({key:value})
 
 #get shows as well as extraneous files/dirs that were not put in subdirs correctly
 rootpath = confighelper(config, 'rootpath')
@@ -34,6 +34,7 @@ fh = open('2-del.log',"w")
 fh2 = open('2-noshow.log', 'w')
 fhdel = open("deletefiles.log", 'w')
 fh3 = open('missinginfo.txt', 'w')
+fhtitle = open('notitle.txt', 'w')
 
 #manage scrap dir entries
 #- move allowed file types to proper subdirectory
@@ -125,9 +126,9 @@ if yesno == 'y':
 					-check if season exists
 
 					'''
-					possibletitles = getlistofpossibletitles(info[0][0])
+					possibletitles = getlistofpossibletitles(info[0][0], oddtitles)
 					titlefound = False
-					print(possibletitles)
+					print(str(possibletitles).encode('utf-8'))
 					for title in possibletitles:
 						if os.path.isdir(rootpath + title):
 							print(title)
@@ -142,10 +143,13 @@ if yesno == 'y':
 						else:
 							print("need to create season dir")
 							os.makedirs(rootpath + title + "\\season " + season)
-							exit()
+							#exit()
 					else:
 						print("title not found")
-						exit()
+						stringline = str(possibletitles).encode('utf-8')
+						fhtitle.write(stringline)
+						fhtitle.write("\n")
+						#exit()
 
 
 
@@ -215,6 +219,7 @@ print("Show directories: %d" % len(showdirs))
 print("Non show directories: %d" % len(nonshowdirs))
 '''
 
+fhtitle.close()
 fhdel.close()
 fh3.close()
 fh2.close()

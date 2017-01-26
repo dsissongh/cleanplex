@@ -116,10 +116,19 @@ def getlistofpossibletitles(fileitem, oddtitles):
     """
     title = []
     myvalue = ""
+    try:
+    	fileitem.decode('utf-8')
+    except:
+    	pass
+
     title.append(fileitem)
     lookfor = fileitem.replace("."," ")
     title.append(lookfor)
     lookfor = fileitem.replace('-'," ")
+    title.append(lookfor)
+    lookfor = fileitem.replace('US', ' ')
+    title.append(lookfor)
+    lookfor = fileitem.replace('2010', ' ')
     title.append(lookfor)
 
     #add oddtitles to possible list

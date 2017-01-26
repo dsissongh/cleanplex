@@ -91,6 +91,7 @@ if yesno == 'y':
 
 		filecount += 1
 
+		notitle = 0
 		for item2 in accepted2:
 			#print(item2)
 			info = []
@@ -108,6 +109,8 @@ if yesno == 'y':
 
 					break
 
+			#if we get here with skip = False, then we have a file we have to move
+			print("---------------")
 			if not skip:
 				info = getmediainfo(item2[0])
 				#print(str(info))
@@ -129,6 +132,7 @@ if yesno == 'y':
 					possibletitles = getlistofpossibletitles(info[0][0], oddtitles)
 					titlefound = False
 					print(str(possibletitles).encode('utf-8'))
+					filesmoved = 0
 					for title in possibletitles:
 						if os.path.isdir(rootpath + title):
 							print(title)
@@ -138,17 +142,40 @@ if yesno == 'y':
 
 					if titlefound:
 						season = fixseason(info[0][1])
-						if os.path.isdir(rootpath + title + "\\season " + season):		
-							print("path exists")
+						if os.path.isdir(rootpath + title + "\\season " + season):	
+							#found show and season dir... we will check this directory for matching files	
+							#print("path exists")
+							print("look for " + rootpath + title + "\\season " + season)
+							subdirshows, toss = interrogatedirectory(filetypes, rootpath + title + "\\season ", season)
+							#print(str(subdirshows))
+							for element in subdirshows:
+								try:
+									element[0].encode('utf-8')
+								except:
+									pass
+									
+								print(element[0])
+								sinfo = getmediainfo(element[0])
+								print(info[0][2])
+								print(sinfo[0][2])
+								print("\n")
+								if info[0][2] == sinfo[0][2]:
+									print("match")
+								else:
+									print('not found')
+									filesmoved += 1
+
+							##exit()
+
 						else:
 							print("need to create season dir")
 							os.makedirs(rootpath + title + "\\season " + season)
 							#exit()
 					else:
-						print("title not found")
-						stringline = str(possibletitles).encode('utf-8')
-						fhtitle.write(stringline)
+						#print("title not found")
+						fhtitle.write(str(possibletitles))
 						fhtitle.write("\n")
+						notitle += 1
 						#exit()
 
 
@@ -169,6 +196,8 @@ else:
 	print("no")
 	exit()
 
+print("NOTITLE: " + str(notitle))
+print("Files added: " + str(filesmoved))
 #at this point, we have removed the empty directories and rejected files
 
 '''

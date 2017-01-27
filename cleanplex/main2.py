@@ -29,7 +29,8 @@ disallowedstrings = disallowedstrings.split(',')
 #get directories sorted as show and non show items
 showdirs, nonshowdirs = getlistoffileitems(rootpath)
 
-#log file
+#log filefile
+consolelog = open('consolelog.log', 'w')
 fh = open('2-del.log',"w")
 fh2 = open('2-noshow.log', 'w')
 fhdel = open("deletefiles.log", 'w')
@@ -121,6 +122,7 @@ if yesno == 'y':
 					fh3.write("\n")
 				else:
 					#we get here, we have a show file and meta info
+					consolelog.write("item2[1]")
 					print(item2[1])				
 					print(str(info))
 					'''
@@ -145,25 +147,34 @@ if yesno == 'y':
 						if os.path.isdir(rootpath + title + "\\season " + season):	
 							#found show and season dir... we will check this directory for matching files	
 							#print("path exists")
+							consolelog.write(rootpath + title + "\\season " + season + "\n")
 							print("look for " + rootpath + title + "\\season " + season)
 							subdirshows, toss = interrogatedirectory(filetypes, rootpath + title + "\\season ", season)
 							#print(str(subdirshows))
 							for element in subdirshows:
+								#
+								'''
 								try:
-									element[0].encode('utf-8')
+									element[0].encode('ascii','ignore')
 								except:
 									pass
-									
+
 								print(element[0])
+								'''
 								sinfo = getmediainfo(element[0])
-								print(info[0][2])
-								print(sinfo[0][2])
-								print("\n")
-								if info[0][2] == sinfo[0][2]:
-									print("match")
-								else:
-									print('not found')
-									filesmoved += 1
+
+								if len(info) > 0 and len(sinfo) > 0:
+									print(info[0][2])
+									print(sinfo[0][2])
+									consolelog.write(info[0][2])
+									consolelog.write("\n")
+									consolelog.write(sinfo[0][2])
+									consolelog.write("\n")
+									if info[0][2] == sinfo[0][2]:
+										print("match")
+									else:
+										print('not found')
+										filesmoved += 1
 
 							##exit()
 
@@ -248,6 +259,7 @@ print("Show directories: %d" % len(showdirs))
 print("Non show directories: %d" % len(nonshowdirs))
 '''
 
+consolelog.close()
 fhtitle.close()
 fhdel.close()
 fh3.close()

@@ -12,12 +12,26 @@ rootpath = confighelper(config, 'rootpath')
 
 print(rootpath)
 
-results = os.listdir(rootpath)
+logfile = open('log.txt', 'w')
 
+results = os.listdir(rootpath)
+mediaitems = []
+count = 0
 for item in results:
 	try:
 		item.encode("utf-8")
 	except:
 		pass
 
-	print(item)
+	#create the object
+	mediaitems.append(Media(count))
+	mediaitems[count].name = item
+	mediaitems[count].path = rootpath
+	#mediaitems[count].type = 
+
+	count += 1
+	logfile.write(item)
+	logfile.write("\n")
+
+
+logfile.close()

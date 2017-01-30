@@ -6,7 +6,9 @@ class Media(object):
 	def __init__(self, index):
 		self.index = index
 		self.acceptedfiles = ''
+		self.disallowedfiles = ''
 		self.disallowedstrings = ''
+		self.ignoredirs = ''
 		self.name = ''
 		self.path = ''
 		self.type = ''
@@ -17,6 +19,7 @@ class Media(object):
 		self.size = ''
 		self.subitems = []
 		self.submediafiles = []
+		self.mediadictionary = {}
 
 	
 	def determinetype(self):
@@ -33,23 +36,54 @@ class Media(object):
 
 	def interrogatesubir(self):
 		if os.path.isdir(self.path + self.name):
-			contents = os.listdir(self.path + self.name)
-			for item in contents:
-				self.subitems.append(item)
+			for ignore in self.ignoredirs:
+				#ignore specific dirs
+				if ignore not in self.name.lower():
+					contents = os.listdir(self.path + self.name)
+					for item in contents:
+						self.subitems.append(item)
+				else:
+					pass
+					#skipped dirs 
+					#TODO: create a list
 
 		if not self.showdir:
 			self.__mediaonly__()
+			self.__mediainfo__()
 
 
 	def __mediaonly__(self):
-		for disallow in list(self.disallowedstrings):
-			for item in self.subitems:
-				if disallow not in item:
-					self.submediafiles.append(item)
+		#
+		for item in self.subitems:
+			for disallow in self.disallowedstrings.split(","):
+				if not os.path.isdir(self.path + self.name + "\\" + item):
+					#dissallowed strings in the file
+					#file cannot contain word in disallow
+					if disallow not in item.lower():
+						#check file extensions
+						if item[-3:].lower() not in self.disallowedfiles:
+							self.submediafiles.append(item)
+				else:
+					pass
+					#this represents a sub-subdirectory
+					#not sure how to handle this one yet (maybe copy files out of it for the next run?)
 
 		self.submediafiles = list(set(self.submediafiles))
 
-	def determinedetails(self):		
+
+	def __mediainfo__(self):
+		for item in self.submediafiles:
+			kick = False
+			for disallow in self.disallowedstrings.split(","):
+				if disallow in item.lower():
+					kick = True
+
+			if not kick:
+				fileinfo = self.__determinedetails__(item)
+				self.mediadictionary.update({item:fileinfo})	
+
+
+	def __determinedetails__(self, fileitem):		
 		#tv = re.findall(r"(.*?)[ |.]S([\d+]{1,2})E([\d+]{1,2})[ |.]([\d+]{3,4}p|)", fileitem)
 		tv = re.findall(r"(.*?)[ |.|-][S|s]([\d+]{1,2})(|.)[E|e]([\d+]{1,2})[ |.|-]([\d+]{3,4}p|)", fileitem)
 		if len(tv) > 0:

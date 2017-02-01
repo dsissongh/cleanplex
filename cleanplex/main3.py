@@ -40,6 +40,7 @@ for item in progressbar(results):
 	#mediaitems[count].type = 
 	mediaitems[count].determinetype()
 	mediaitems[count].interrogatesubir()
+	mediaitems[count].setfiledetails()
 	#print(mediaitems[count].type)
 	#print(mediaitems[count].showdir)
 
@@ -47,6 +48,12 @@ for item in progressbar(results):
 	logfile.write("\n")
 	logfile.write(item)
 	logfile.write("\n")
+	logfile.write(mediaitems[count].name)
+	logfile.write("\n")	
+	logfile.write(str(mediaitems[count].season))
+	logfile.write("\n")	
+	logfile.write(str(mediaitems[count].episode))
+	logfile.write("\n")			
 	logfile.write(mediaitems[count].acceptedfiles)
 	logfile.write("\n")
 	logfile.write(mediaitems[count].type)
@@ -62,10 +69,9 @@ for item in progressbar(results):
 	logfile.write("\n")
 	logfile.write("MD:")
 	logfile.write(str(len(mediaitems[count].mediadictionary)))
-	logfile.write("\n")	
+	logfile.write("\n")		
 
 	if not mediaitems[count].showdir:
-		setfiledetails()
 		logfilemediaonly.write(str(mediaitems[count].subitems))
 		logfilemediaonly.write("\n")		
 		logfilemediaonly.write(str(mediaitems[count].mediadictionary))

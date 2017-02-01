@@ -104,5 +104,11 @@ class Media(object):
 	            			else:
 	                			return []
 
+	
 	def setfiledetails(self):
-		
+		for show in self.mediadictionary:
+			details = self.mediadictionary[show]
+			if len(details) > 0:
+				self.season = details[0][1]
+				self.episode = details[0][2]
+

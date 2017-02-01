@@ -19,6 +19,7 @@ ignoredirs = confighelper(config, 'ignoredirs')
 logfile = open('log.txt', 'w')
 logfilemediaonly = open('log-mediaonly.txt', 'w')
 
+
 results = os.listdir(rootpath)
 results.sort()
 progressbar = ProgressBar()
@@ -64,6 +65,7 @@ for item in progressbar(results):
 	logfile.write("\n")	
 
 	if not mediaitems[count].showdir:
+		setfiledetails()
 		logfilemediaonly.write(str(mediaitems[count].subitems))
 		logfilemediaonly.write("\n")		
 		logfilemediaonly.write(str(mediaitems[count].mediadictionary))

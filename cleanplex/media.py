@@ -103,3 +103,6 @@ class Media(object):
 	                			return tv
 	            			else:
 	                			return []
+
+	def setfiledetails(self):
+		

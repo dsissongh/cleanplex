@@ -25,6 +25,7 @@ results.sort()
 progressbar = ProgressBar()
 mediaitems = []
 count = 0
+showcount = 0
 
 #loop through the items in the given path and create the objects
 for item in progressbar(results):
@@ -43,40 +44,48 @@ for item in progressbar(results):
 	mediaitems[count].setfiledetails()
 	#print(mediaitems[count].type)
 	#print(mediaitems[count].showdir)
+	if not mediaitems[count].showdir:
+		showcount += 1
 
+	logfile.write("\n")
 	logfile.write(69*"-")
-	logfile.write("\n")
+	logfile.write("\nITEM\n")
 	logfile.write(item)
-	logfile.write("\n")
+	logfile.write("\nPATH\n")
+	logfile.write(mediaitems[count].path)	
+	logfile.write("\nNAME\n")
 	logfile.write(mediaitems[count].name)
-	logfile.write("\n")	
+	logfile.write("\nSHOWTITLE\n")
+	logfile.write(mediaitems[count].showtitle)	
+	logfile.write("\nSEASON\n")	
 	logfile.write(str(mediaitems[count].season))
-	logfile.write("\n")	
+	logfile.write("\nEPISODE\n")	
 	logfile.write(str(mediaitems[count].episode))
-	logfile.write("\n")			
+	logfile.write("\nACCEPTEDFILES\n")			
 	logfile.write(mediaitems[count].acceptedfiles)
-	logfile.write("\n")
+	logfile.write("\nTYPE\n")
 	logfile.write(mediaitems[count].type)
-	logfile.write("\n")	
+	logfile.write("\nSHOWDIR\n")	
 	logfile.write(str(mediaitems[count].showdir))
-	logfile.write("\n")
+	logfile.write("\nSUBITEMS\n")
 	logfile.write(str(mediaitems[count].subitems))
-	logfile.write("\n")
+	logfile.write("\nSUBMEDIA\n")
 	logfile.write(str(mediaitems[count].submediafiles))
-	logfile.write("\n")
-	logfile.write("DICT - ")
+	logfile.write("\nDICTIONAIRY\n")
 	logfile.write(str(mediaitems[count].mediadictionary))
-	logfile.write("\n")
-	logfile.write("MD:")
+	logfile.write("\nMEDIADICTIONARY\n")
 	logfile.write(str(len(mediaitems[count].mediadictionary)))
-	logfile.write("\n")		
+	logfile.write("\n")	
 
 	if not mediaitems[count].showdir:
+		logfile.write("\nSUBITEMS\n")	
 		logfilemediaonly.write(str(mediaitems[count].subitems))
-		logfilemediaonly.write("\n")		
+		logfilemediaonly.write("\nMEDIADICTIONARY\n")		
 		logfilemediaonly.write(str(mediaitems[count].mediadictionary))
 		logfilemediaonly.write("\n")
 		logfilemediaonly.write("---------------------------")
 		logfilemediaonly.write("\n")
 	count += 1
 logfile.close()
+
+print("Show files found: %d" % showcount)

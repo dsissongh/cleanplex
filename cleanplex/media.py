@@ -105,10 +105,22 @@ class Media(object):
 	                			return []
 
 	
+	def __fixseason__(self, season):
+		'''remove prepended 0 on season '''
+		newseason = ""
+		if season[0] == "0":
+			newseason = season[1:]
+		else:
+			newseason = season
+
+		return newseason    
+
+
 	def setfiledetails(self):
+
 		for show in self.mediadictionary:
 			details = self.mediadictionary[show]
 			if len(details) > 0:
-				self.season = details[0][1]
+				self.season = self.__fixseason__(details[0][1])
 				self.episode = details[0][2]
 

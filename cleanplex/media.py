@@ -14,12 +14,14 @@ class Media(object):
 		self.type = ''
 		self.season = ''
 		self.episode = ''
+		self.oddtitles = ''
 		self.showtitle = ''
 		self.showdir = False
 		self.size = ''
 		self.subitems = []
 		self.submediafiles = []
 		self.mediadictionary = {}
+		self.possibletitles = []
 
 	
 	def determinetype(self):
@@ -50,6 +52,10 @@ class Media(object):
 		if not self.showdir:
 			self.__mediaonly__()
 			self.__mediainfo__()
+			try:
+				self.possibletitles = self.__getlistofpossibletitles__(self.mediadictionary[self.submediafiles[0]][0], self.oddtitles)
+			except:
+				pass
 
 
 	def __mediaonly__(self):
@@ -124,3 +130,45 @@ class Media(object):
 				self.season = self.__fixseason__(details[0][1])
 				self.episode = details[0][2]
 
+
+	def __getlistofpossibletitles__(self, fileitem, oddtitlesfile):
+		"""
+		Create list of possible names for the directory based on the original filename
+
+		Args:
+		    fileitem    - title of the media item.  Used to determine what show is in the subdirectory
+		    shows       - List of all the media directories (which should represent shows)
+		Returns:
+		    A python list of possible media directory names.
+		"""
+		#load oddtitles
+		oddtitles = {}
+		for line in open(oddtitlesfile,'r'):
+			key,value = line.split(',')
+			value = value.replace("\n", "")
+			oddtitles.update({key:value})
+
+		title = []
+		myvalue = ""
+		fileitem = str(fileitem)
+		try:
+			fileitem.decode('utf-8')
+		except:
+			pass
+
+		title.append(fileitem)
+		lookfor = fileitem.replace("."," ")
+		title.append(lookfor)
+		lookfor = fileitem.replace('-'," ")
+		title.append(lookfor)
+		lookfor = fileitem.replace('US', ' ')
+		title.append(lookfor)
+		lookfor = fileitem.replace('2010', ' ')
+		title.append(lookfor)
+
+		#add oddtitles to possible list
+		if fileitem.lower() in oddtitles:
+			myvalue = oddtitles[fileitem]    
+			title.append(myvalue)
+
+		return title

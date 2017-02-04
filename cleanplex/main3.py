@@ -38,6 +38,7 @@ for item in progressbar(results):
 	mediaitems[count].disallowedstrings = disallowedstrings
 	mediaitems[count].ignoredirs = ignoredirs
 	mediaitems[count].path = rootpath
+	mediaitems[count].oddtitles = 'cleanplex\\oddtitles.txt'
 	#mediaitems[count].type = 
 	mediaitems[count].determinetype()
 	mediaitems[count].interrogatesubir()
@@ -53,7 +54,9 @@ for item in progressbar(results):
 	logfile.write(item)
 	logfile.write("\nPATH\n")
 	logfile.write(mediaitems[count].path)	
-	logfile.write("\nNAME\n")
+	logfile.write("\nPOSSIBLETITLES\n")
+	logfile.write(str(mediaitems[count].possibletitles))
+	logfile.write("\nNAME\n")	
 	logfile.write(mediaitems[count].name)
 	logfile.write("\nSHOWTITLE\n")
 	logfile.write(mediaitems[count].showtitle)	

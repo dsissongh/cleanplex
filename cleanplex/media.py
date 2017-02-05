@@ -53,7 +53,7 @@ class Media(object):
 			self.__mediaonly__()
 			self.__mediainfo__()
 			try:
-				self.possibletitles = self.__getlistofpossibletitles__(self.mediadictionary[self.submediafiles[0]][0], self.oddtitles)
+				self.possibletitles = self.__getlistofpossibletitles__(self.mediadictionary[0][0], self.oddtitles)
 			except:
 				pass
 
@@ -150,7 +150,7 @@ class Media(object):
 
 		title = []
 		myvalue = ""
-		fileitem = str(fileitem)
+		#fileitem = str(fileitem)
 		try:
 			fileitem.decode('utf-8')
 		except:

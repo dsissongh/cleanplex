@@ -26,6 +26,8 @@ progressbar = ProgressBar()
 mediaitems = []
 count = 0
 showcount = 0
+seasoncount = 0
+showmovecount = 0
 
 #loop through the items in the given path and create the objects
 for item in progressbar(results):
@@ -47,15 +49,22 @@ for item in progressbar(results):
 	#print(mediaitems[count].showdir)
 	if not mediaitems[count].showdir:
 		showcount += 1
+		mediaitems[count].determinetitlefrompossibletitles()
+		seasoncount += mediaitems[count].checkseasondirectory()
+		showmovecount += mediaitems[count].moveshow()
+
+
 
 	logfile.write("\n")
 	logfile.write(69*"-")
 	logfile.write("\nITEM\n")
 	logfile.write(item)
-	logfile.write("\nPATH\n")
+	logfile.write("\nPATH\n")	
 	logfile.write(mediaitems[count].path)	
 	logfile.write("\nPOSSIBLETITLES\n")
 	logfile.write(str(mediaitems[count].possibletitles))
+	logfile.write("\nTITLE\n")
+	logfile.write(mediaitems[count].title)	
 	logfile.write("\nNAME\n")	
 	logfile.write(mediaitems[count].name)
 	logfile.write("\nSHOWTITLE\n")
@@ -72,7 +81,7 @@ for item in progressbar(results):
 	logfile.write(str(mediaitems[count].showdir))
 	logfile.write("\nSUBITEMS\n")
 	logfile.write(str(mediaitems[count].subitems))
-	logfile.write("\nSUBMEDIA\n")
+	logfile.write("\nSUBMEDIAFILES\n")
 	logfile.write(str(mediaitems[count].submediafiles))
 	logfile.write("\nDICTIONAIRY\n")
 	logfile.write(str(mediaitems[count].mediadictionary))
@@ -92,3 +101,5 @@ for item in progressbar(results):
 logfile.close()
 
 print("Show files found: %d" % showcount)
+print("Season Dirs created: %d" % seasoncount)
+print("Files moved: %d" % showmovecount)

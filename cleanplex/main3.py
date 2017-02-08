@@ -84,6 +84,14 @@ for item in progressbar(results):
 	logfile.write(str(mediaitems[count].mediadictionary))
 	logfile.write("\nMEDIADICTIONARY\n")
 	logfile.write(str(len(mediaitems[count].mediadictionary)))
+	logfile.write("\nSOURCE\n")	
+	logfile.write(str(mediaitems[count].filesource))
+	logfile.write("\nDESTINATION\n")	
+	logfile.write(str(mediaitems[count].filedestination))		
+	logfile.write("\nMOVE\n")	
+	logfile.write(str(mediaitems[count].move))	
+	logfile.write("\nFILENAME\n")	
+	logfile.write(str(mediaitems[count].filename))		
 	logfile.write("\n")	
 
 	if not mediaitems[count].showdir:

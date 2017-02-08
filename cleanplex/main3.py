@@ -41,12 +41,9 @@ for item in progressbar(results):
 	mediaitems[count].ignoredirs = ignoredirs
 	mediaitems[count].path = rootpath
 	mediaitems[count].oddtitles = 'cleanplex\\oddtitles.txt'
-	#mediaitems[count].type = 
 	mediaitems[count].determinetype()
 	mediaitems[count].interrogatesubir()
 	mediaitems[count].setfiledetails()
-	#print(mediaitems[count].type)
-	#print(mediaitems[count].showdir)
 	if not mediaitems[count].showdir:
 		showcount += 1
 		mediaitems[count].determinetitlefrompossibletitles()
@@ -94,6 +91,10 @@ for item in progressbar(results):
 		logfilemediaonly.write(str(mediaitems[count].subitems))
 		logfilemediaonly.write("\nMEDIADICTIONARY\n")		
 		logfilemediaonly.write(str(mediaitems[count].mediadictionary))
+		logfile.write("\nSOURCE\n")	
+		logfilemediaonly.write(str(mediaitems[count].filesource))
+		logfile.write("\nDESTINATION\n")	
+		logfilemediaonly.write(str(mediaitems[count].filedestination))				
 		logfilemediaonly.write("\n")
 		logfilemediaonly.write("---------------------------")
 		logfilemediaonly.write("\n")

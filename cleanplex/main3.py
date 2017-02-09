@@ -18,6 +18,7 @@ ignoredirs = confighelper(config, 'ignoredirs')
 
 logfile = open('log.txt', 'w')
 logfilemediaonly = open('log-mediaonly.txt', 'w')
+consolelog = open('consolelog.log', 'w')
 
 
 results = os.listdir(rootpath)
@@ -91,7 +92,12 @@ for item in progressbar(results):
 	logfile.write("\nMOVE\n")	
 	logfile.write(str(mediaitems[count].move))	
 	logfile.write("\nFILENAME\n")	
-	logfile.write(str(mediaitems[count].filename))		
+	logfile.write(str(mediaitems[count].filename))	
+	##consolelog.write("\nREMOVEDIR\n")	
+	if not mediaitems[count].removedir =='':
+		consolelog.write(str(mediaitems[count].removedir))	
+		consolelog.write("\n")
+
 	logfile.write("\n")	
 
 	if not mediaitems[count].showdir:
@@ -108,6 +114,7 @@ for item in progressbar(results):
 		logfilemediaonly.write("\n")
 	count += 1
 logfile.close()
+consolelog.close()
 
 print("Show files found: %d" % showcount)
 print("Season Dirs created: %d" % seasoncount)

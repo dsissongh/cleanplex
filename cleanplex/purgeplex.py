@@ -1,6 +1,7 @@
 import os
 
 from purgefunction import logactivity
+from purgefunction import traversedir
 
 from configparser import SafeConfigParser 
 from mediafunctions import confighelper
@@ -17,6 +18,7 @@ emptydirs = 0
 
 #remove empty directories
 for item in os.listdir(rootpath):
+	#manage directories that are bound by brackets
 	if item[0:1] == '[' and item[-1:] == ']':
 		original = item
 		logactivity(activity, 'replace', item)
@@ -28,7 +30,7 @@ for item in os.listdir(rootpath):
 		print(item)
 
 
-
+	#remove empty directories
 	if os.path.isdir(rootpath + item):
 		itemcount += 1
 		if not os.listdir(rootpath + item):
@@ -37,6 +39,9 @@ for item in os.listdir(rootpath):
 			logactivity(activity, action, item)
 			emptydirs += 1
 			print(item)
+		else:
+			traversedir(rootpath + item)
+			exit()
 
 #for item in os.listdir(rootpath):
 

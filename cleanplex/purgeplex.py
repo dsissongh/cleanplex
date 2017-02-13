@@ -16,6 +16,8 @@ activity = open('activity.log', 'w')
 itemcount = 0
 emptydirs = 0
 
+stopat = 0
+
 #remove empty directories
 for item in os.listdir(rootpath):
 	#manage directories that are bound by brackets
@@ -41,7 +43,10 @@ for item in os.listdir(rootpath):
 			print(item)
 		else:
 			traversedir(rootpath + item)
-			exit()
+
+	stopat += 1
+	if stopat > 0:
+		exit()		
 
 #for item in os.listdir(rootpath):
 

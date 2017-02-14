@@ -5,6 +5,7 @@ from purgefunction import traversedir
 
 from configparser import SafeConfigParser 
 from mediafunctions import confighelper
+from mediafunctions import getmediainfo
 
 #setup the config object
 config = SafeConfigParser()
@@ -20,6 +21,7 @@ stopat = 0
 
 #remove empty directories
 for item in os.listdir(rootpath):
+	elements = []
 	#manage directories that are bound by brackets
 	if item[0:1] == '[' and item[-1:] == ']':
 		original = item
@@ -42,8 +44,9 @@ for item in os.listdir(rootpath):
 			emptydirs += 1
 			print(item)
 		else:
-			traversedir(rootpath + item)
+			elements = traversedir(rootpath + item)
 
+	print(str(elements))
 	stopat += 1
 	if stopat > 0:
 		exit()		

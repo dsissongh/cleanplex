@@ -5,6 +5,7 @@ def logactivity(fh, action, message):
 
 
 def traversedir(path):
+	items = []
 	#print("1" + path)
 	listing = os.listdir(path)
 	for item in listing:
@@ -13,5 +14,6 @@ def traversedir(path):
 			print("**" + path + "\\" + item)
 		else:
 			print("3" + path + "\\" + item)
+			items.append(path + "\\" + item)
 
-	return		
+	return items

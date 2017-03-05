@@ -6,12 +6,18 @@ from func import *
 from modules import Media
 
 rootpath = "h:\\tv\\"
+rootpath = "//mnt//h//TV//"
 dirlist = os.listdir(rootpath)
 showdirfile = "showdirs.log"
 inventory = "inventory.log"
 cleanplex = "cleanplex.log"
 skipped = "skipped.log"
-shutil.copy(showdirfile,inventory)
+
+if os.path.exists(showdirfile):
+    shutil.copy(showdirfile,inventory)
+else:
+    open(inventory, 'w+')
+
 showdirs = open(showdirfile, 'w+')
 logfile = open(cleanplex, 'w+')
 skipped = open(skipped, 'w+')
@@ -55,16 +61,16 @@ for media in dirlist:
         list(set(possibletitles))
         mymedia[media].settitle(possibletitles)
         filenames = []
-        filenames = getfilesindir(rootpath + media + "\\")
+        filenames = getfilesindir(rootpath + media + "//")
         mymedia[media].setfilenames(filenames)
 
         newfilenames = []
-        newfilenames = cleansourcedir(rootpath + media + "\\", filenames, acceptedfiletypes)
+        newfilenames = cleansourcedir(rootpath + media + "//", filenames, acceptedfiletypes)
         mymedia[media].setfilenames(newfilenames)
 
         if newfilenames:
-            mymedia[media].setfullpath(rootpath + media + "\\" + newfilenames[0])
-            filesize = getfilesize(rootpath + media + "\\" + newfilenames[0])
+            mymedia[media].setfullpath(rootpath + media + "//" + newfilenames[0])
+            filesize = getfilesize(rootpath + media + "//" + newfilenames[0])
             mymedia[media].setsize(filesize)
         else:
             mymedia[media].setfullpath("")
@@ -76,17 +82,17 @@ for media in dirlist:
         #set the directory to check 
         if showdir != "":
             #check directory for season and set valid
-            mymedia[media].setcheckfor(showdir + "\\Season " + season)
+            mymedia[media].setcheckfor(showdir + "//Season " + season)
 
             #loop through directory and look for "Season *" directories
             #if they exist, set valid state to True
             #subdirlist = os.listdir(showdir)
             #for files in subdirlist:
             #    if files[6:] == "Season":
-            if os.path.isdir(showdir + "\\Season " + season):
+            if os.path.isdir(showdir + "//Season " + season):
                 #if true, then check all the files for the season and episode of this file
                 mymedia[media].setvalidstate(True)
-                subdirlist = os.listdir(showdir + "\\Season " + season)
+                subdirlist = os.listdir(showdir + "//Season " + season)
                 for files in subdirlist:
                     stype,stv = getmediatype(files)
                     mymedia[media].settempdata(stv)

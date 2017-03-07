@@ -42,16 +42,32 @@ def getlistofpossibletitles(fileitem,fname):
             A python list of possible media directory names.
     """
     title = []
+    oddtitles = open("oddtitles.txt", 'r')
+    content = oddtitles.read()
+    oddtitles.close()
+
+    content = content.split("\n")
+    for line in content:
+        elements = line.split(',')
+        if fileitem in elements[0]:
+            #print(elements[1])
+            title.append(elements[1].title())
+
+    
     title.append(fileitem)
+    title.append(fileitem.title())
     lookfor = fileitem.replace("."," ")
     title.append(lookfor)
+    title.append(lookfor.title())
     lookfor = fileitem.replace('-'," ")
     title.append(lookfor)
+    title.append(lookfor.title())
     with open(fname, "r") as dataf:
         for line in dataf:
             if lookfor.upper() in line.upper():
                 line = line.replace("\n","")
                 title.append(line)
+                title.append(line.title())
     return title
 
 def getfilesindir(fpath):
@@ -108,3 +124,11 @@ def fixseason(season):
     else:
         newseason = season
     return newseason
+
+def getmediadirsize(path):
+    totalsize = 0
+    for dirpath, dirnames, filenames in os.walk(path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            totalsize += os.path.getsize(fp)
+    return totalsize

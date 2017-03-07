@@ -7,6 +7,7 @@ from modules import Media
 
 rootpath = "h:\\tv\\"
 rootpath = "//mnt//h//TV//"
+pathtomoveto = "//mnt//h//test//"
 dirlist = os.listdir(rootpath)
 showdirfile = "showdirs.log"
 inventory = "inventory.log"
@@ -23,14 +24,18 @@ logfile = open(cleanplex, 'w+')
 skipped = open(skipped, 'w+')
 showdirs.truncate()
 logfile.truncate()
-acceptedfiletypes = ['mkv']
+acceptedfiletypes = ['mkv','mp4']
 
 validstatemedia = 0
+duplicatecount = 0
+totalrecoversize = 0
 
 dirlist.sort()
 mymedia = {}
+#loop through the directory listing
 for media in dirlist:
     mymedia[media] = Media(rootpath, media)
+    #dir or file and data
     otype,odata = getmediatype(rootpath + media)
     mymedia[media].setdata(odata)
     mymedia[media].setdatalen(len(odata))
@@ -41,7 +46,9 @@ for media in dirlist:
     if len(odata) > 0:
         #print(odata[0][0])
         title = odata[0][0]
-        title = title[6:]  #need to make this custom to the path
+        pathlen = len(rootpath)
+        title = title[pathlen:]  #need to make this custom to the path
+    
         
         #if odata[0][1]:
         season = odata[0][1]
@@ -92,11 +99,30 @@ for media in dirlist:
             if os.path.isdir(showdir + "//Season " + season):
                 #if true, then check all the files for the season and episode of this file
                 mymedia[media].setvalidstate(True)
-                subdirlist = os.listdir(showdir + "//Season " + season)
+                dirtoloop = showdir + "//Season " + season
+                subdirlist = os.listdir(dirtoloop)
+                #loop through files in season dir and compare
+
+                targetfilenames = []
                 for files in subdirlist:
+                    #first, lets see if the exact file exists
+                    for mfile in mymedia[media].getfilenames():
+                        #this is an exact file match
+                        if mfile == files:
+                            mymedia[media].setduplicate(True)
+                            duplicatecount += 1
+                            mymedia[media].setmediadirsize(getmediadirsize(mymedia[media].getpath()))
+
+                    targetfilenames.append(files)
+
                     stype,stv = getmediatype(files)
                     mymedia[media].settempdata(stv)
 
+                if mymedia[media].getduplicate():
+                    shutil.move(mymedia[media].getpath(), pathtomoveto)
+
+                totalrecoversize += mymedia[media].getmediadirsize()
+                mymedia[media].settargetfilenames(targetfilenames)
 
             else:
                 mymedia[media].setvalidstate(False)
@@ -147,41 +173,59 @@ for item in dirlist:
         print(mymedia[item].getshowdir())
         print("[CHECKDIR:] ", end="")
         print(mymedia[item].getcheckfor())
-        print("[VALIDSTATE: ]", end="")
+        print("[VALIDSTATE:]", end="")
         print(mymedia[item].getvalidstate())
+        print("[TMPDATA:]", end="")
         print(mymedia[item].gettempdata())
+        print("[TARGETFILENAMES: ]", end="")
+        print(mymedia[item].gettargetfilenames())
+        print("[DUPLICATE:]", end="")
+        print(mymedia[item].getduplicate())
+        print("[MEDIADIRSIZE:]", end="")
+        print(mymedia[item].getmediadirsize())   
 
+
+        print("[DC:]" + str(duplicatecount))
+        print("[TOTALRECOVER]:" + str(totalrecoversize/1000000000) +"GB")
         print(60*"-")
 
-        logfile.write("[ID:] ")
+        logfile.write("[ID:]")
         logfile.write(str(mymedia[item].getid()))
-        logfile.write("\n[NAME:] ")
+        logfile.write("\n[NAME:]")
         logfile.write(mymedia[item].getname())
-        logfile.write("\n[TITLE:] ")
+        logfile.write("\n[TITLE:]")
         logfile.write(str(mymedia[item].gettitle()))
-        logfile.write("\n[DATA:] ")
+        logfile.write("\n[DATA:]")
         logfile.write(str(mymedia[item].getdata()))
-        logfile.write("\n[TYPE:] ")
+        logfile.write("\n[TYPE:]")
         logfile.write(str(mymedia[item].gettype()))
-        logfile.write("\n[PATH:] ")
+        logfile.write("\n[PATH:]")
         logfile.write(str(mymedia[item].getpath()))
-        logfile.write("\n[FILENAMES:] ")
+        logfile.write("\n[FILENAMES:]")
         logfile.write(str(mymedia[item].getfilenames()))
 
-        logfile.write("\n[SEASON:] ")
+        logfile.write("\n[SEASON:]")
         logfile.write(str(mymedia[item].getseason()))
-        logfile.write("\n[EPISODE:] ")
+        logfile.write("\n[EPISODE:]")
         logfile.write(str(mymedia[item].getepisode()))
-        logfile.write("\n[FULLPATH:] ")
+        logfile.write("\n[FULLPATH:]")
         logfile.write(str(mymedia[item].getfullpath()))
-        logfile.write("\n[SIZE:] ")
+        logfile.write("\n[SIZE:]")
         logfile.write(str(mymedia[item].getsize()))
-        logfile.write("\n[SHOWDIR:] ")
+        logfile.write("\n[SHOWDIR:]")
         logfile.write(str(mymedia[item].getshowdir()))
-        logfile.write("\n[CHECKDIR:] ")
+        logfile.write("\n[CHECKDIR:]")
         logfile.write(str(mymedia[item].getcheckfor()))
         logfile.write("\n[VALIDSTATE:] ")
         logfile.write(str(mymedia[item].getvalidstate()))
+        logfile.write("\n[TMPDATA:]")
+        logfile.write(str(mymedia[item].gettempdata()))
+        logfile.write("\n[TARGETFILENAMES:]")
+        logfile.write(str(mymedia[item].gettargetfilenames()))
+        logfile.write("\n[DUPLICATE:]")
+        logfile.write(str(mymedia[item].getduplicate()))
+        logfile.write("\n[MEDIADIRSIZE:]")
+        logfile.write(str(mymedia[item].getmediadirsize()))  
 
         logfile.write("\n")
         logfile.write(120*"-")

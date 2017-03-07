@@ -27,6 +27,10 @@ class Media(object):
         self.__checkfor = ""
         self.__valid = False
         self.__temp = []
+        self.__duplicate = False
+        self.__replace = False
+        self.__targetfilenames = []
+        self.__mediadirsize = 0
 
     def getname(self):
         return self.__name
@@ -72,6 +76,18 @@ class Media(object):
 
     def gettempdata(self):
         return self.__temp
+
+    def getduplicate(self):
+        return self.__duplicate
+
+    def getreplace(self):
+        return self.__replace
+
+    def gettargetfilenames(self):
+        return self.__targetfilenames  
+
+    def getmediadirsize(self):
+        return self.__mediadirsize
 
 
     def settype(self, otype):
@@ -120,3 +136,15 @@ class Media(object):
 
     def settempdata(self,temp):
         self.__temp = temp
+
+    def setduplicate(self,duplicate):
+        self.__duplicate = duplicate
+
+    def setreplace(self,replace):
+        self.__replace = replace
+
+    def settargetfilenames(self,filenames):
+        self.__targetfilenames = filenames
+
+    def setmediadirsize(self, size):
+        self.__mediadirsize = size

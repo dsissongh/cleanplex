@@ -13,6 +13,7 @@ showdirfile = "showdirs.log"
 inventory = "inventory.log"
 cleanplex = "cleanplex.log"
 skipped = "skipped.log"
+movemedialog = 'move.log'
 
 if os.path.exists(showdirfile):
     shutil.copy(showdirfile,inventory)
@@ -22,9 +23,10 @@ else:
 showdirs = open(showdirfile, 'w+')
 logfile = open(cleanplex, 'w+')
 skipped = open(skipped, 'w+')
+movemedia = open(movemedialog, 'w+')
 showdirs.truncate()
 logfile.truncate()
-acceptedfiletypes = ['mkv','mp4']
+acceptedfiletypes = ['mkv','mp4','avi']
 
 validstatemedia = 0
 duplicatecount = 0
@@ -104,6 +106,9 @@ for media in dirlist:
                 #loop through files in season dir and compare
 
                 targetfilenames = []
+                compare = []
+
+                #loop through files in a season subdirectory
                 for files in subdirlist:
                     #first, lets see if the exact file exists
                     for mfile in mymedia[media].getfilenames():
@@ -113,16 +118,32 @@ for media in dirlist:
                             duplicatecount += 1
                             mymedia[media].setmediadirsize(getmediadirsize(mymedia[media].getpath()))
 
+                        #now lets check if the directory has this season and episode (file in different name)
+                        #loop through targetfilenames
+                        ##fileoutput = ""
+                        ##for existingfile in mymedia[media].gettargetfilenames():
+                            ##fileoutput = fileoutput + existingfile + "\n"
+                        
+                        compare.append(mfile)
+
+
                     targetfilenames.append(files)
 
                     stype,stv = getmediatype(files)
                     mymedia[media].settempdata(stv)
 
+                #remove directory for duplicate files
                 if mymedia[media].getduplicate():
                     shutil.move(mymedia[media].getpath(), pathtomoveto)
 
                 totalrecoversize += mymedia[media].getmediadirsize()
                 mymedia[media].settargetfilenames(targetfilenames)
+
+                #move file if not a duplicate and filename exists then move dir
+                if not mymedia[media].getduplicate():
+                    for mfile in mymedia[media].getfilenames():
+                        if not mfile == '':
+                            movemedia.write(mfile + "\n")
 
             else:
                 mymedia[media].setvalidstate(False)
@@ -183,6 +204,8 @@ for item in dirlist:
         print(mymedia[item].getduplicate())
         print("[MEDIADIRSIZE:]", end="")
         print(mymedia[item].getmediadirsize())   
+        print("[COMPARE not object:]", end="")
+        print(str(compare))
 
 
         print("[DC:]" + str(duplicatecount))
@@ -226,6 +249,8 @@ for item in dirlist:
         logfile.write(str(mymedia[item].getduplicate()))
         logfile.write("\n[MEDIADIRSIZE:]")
         logfile.write(str(mymedia[item].getmediadirsize()))  
+        logfile.write("\n[COMPARE not object:]")
+        logfile.write(str(compare))
 
         logfile.write("\n")
         logfile.write(120*"-")
@@ -237,5 +262,6 @@ for item in dirlist:
 showdirs.close()
 logfile.close()
 skipped.close()
+movemedia.close()
 
 #print(getlistofpossibletitles.__doc__)

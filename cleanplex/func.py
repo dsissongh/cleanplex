@@ -115,6 +115,7 @@ def checkshowdirectory(path, showdir):
     for filetocheck in showdir:
         if os.path.isdir(path + filetocheck):
             newshow = path + filetocheck
+    
     return newshow
 
 def fixseason(season):

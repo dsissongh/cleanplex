@@ -110,21 +110,36 @@ for media in dirlist:
 
                 #loop through files in a season subdirectory
                 for files in subdirlist:
+                    print("----\n")
+                    print(files)
+                    throw, tempcinfo = getmediatype(files)
+                    if len(tempcinfo) > 0:
+                        print(tempcinfo)
+                        tempcepisode = tempcinfo[0][2]
+                        print(tempcepisode)
+
                     #first, lets see if the exact file exists
                     for mfile in mymedia[media].getfilenames():
+                        print(mfile)
+                        print(mymedia[media].getepisode())
+                        print(mymedia[media].getpath())
+                        gettingsizefor = mymedia[media].getpath() + "//" + mfile
+                        print(gettingsizefor)
+                        if not gettingsizefor:
+                            print(getfilesize(gettingsizefor))
+
                         #this is an exact file match
                         if mfile == files:
                             mymedia[media].setduplicate(True)
                             duplicatecount += 1
-                            mymedia[media].setmediadirsize(getmediadirsize(mymedia[media].getpath()))
+                            mymedia[media].setmediadirsize(getmediadirsizemymedia[media].getpath() + "//" + myfile(mymedia[media].getpath()))
 
                         #now lets check if the directory has this season and episode (file in different name)
-                        #loop through targetfilenames
-                        ##fileoutput = ""
-                        ##for existingfile in mymedia[media].gettargetfilenames():
-                            ##fileoutput = fileoutput + existingfile + "\n"
-                        
-                        compare.append(mfile)
+                        if mymedia[media].getepisode() == tempcepisode:
+                            print("match")
+                            mymedia[media].setduplicate(True)
+                            duplicatecount += 1
+                            ##exit()
 
 
                     targetfilenames.append(files)
@@ -145,13 +160,14 @@ for media in dirlist:
                         if not mfile == '':
                             movemedia.write(mfile + "\n")
 
+                ##exit()
+
             else:
                 mymedia[media].setvalidstate(False)
 
             #validstatemedia
     else:
         skipped.write(media + '\n')
-
 
 
         

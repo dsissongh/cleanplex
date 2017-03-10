@@ -126,6 +126,14 @@ def fixseason(season):
         newseason = season
     return newseason
 
+def unfixseason(season):
+    newseason = ""
+    if len(season) == 1:
+        newseason = '0' + season[0]
+    else:
+        newseason = season
+    return newseason
+
 def getmediadirsize(path):
     totalsize = 0
     for dirpath, dirnames, filenames in os.walk(path):

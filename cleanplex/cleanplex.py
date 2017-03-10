@@ -14,6 +14,7 @@ inventory = "inventory.log"
 cleanplex = "cleanplex.log"
 skipped = "skipped.log"
 movemedialog = 'move.log'
+tempoutlog = 'tempout.lot'
 
 if os.path.exists(showdirfile):
     shutil.copy(showdirfile,inventory)
@@ -24,8 +25,10 @@ showdirs = open(showdirfile, 'w+')
 logfile = open(cleanplex, 'w+')
 skipped = open(skipped, 'w+')
 movemedia = open(movemedialog, 'w+')
+tempout = open(tempoutlog, 'w')
 showdirs.truncate()
 logfile.truncate()
+tempout.truncate()
 acceptedfiletypes = ['mkv','mp4','avi']
 
 validstatemedia = 0
@@ -106,61 +109,87 @@ for media in dirlist:
                 #loop through files in season dir and compare
 
                 targetfilenames = []
-                compare = []
+                match = []
 
                 #loop through files in a season subdirectory
                 for files in subdirlist:
-                    print("----\n")
-                    print(files)
+                    tempout.write("---------------------------------------------\n")
+                    tempout.write("file in sub\n")
+                    tempout.write("NAME " + files)
+                    
                     throw, tempcinfo = getmediatype(files)
                     if len(tempcinfo) > 0:
-                        print(tempcinfo)
+                        #tempout.write(str(tempcinfo))
+                        #tempout.write("\n")
                         tempcepisode = tempcinfo[0][2]
-                        print(tempcepisode)
+                        tempout.write("\n")
+                        tempout.write("EPISODE " + unfixseason(str(tempcepisode)))
+                        tempout.write("\n")
+                        tempout.write("PATH " + dirtoloop)
+                        tempout.write("\n")
+                        tempout.write("SIZE " + str(getfilesize(dirtoloop + "//" + files)))
+                        tempout.write("\n")
+
+                    tempout.write("**\n")
 
                     #first, lets see if the exact file exists
                     for mfile in mymedia[media].getfilenames():
-                        print(mfile)
-                        print(mymedia[media].getepisode())
-                        print(mymedia[media].getpath())
+                        tempout.write("file to compare\n")
+                        tempout.write(mfile)
+                        tempout.write("\n")
+                        tempout.write("EPISODE " + unfixseason(mymedia[media].getepisode()))
+                        tempout.write("\n")
+                        #tempout.write("PATH " + mymedia[media].getpath())
+                        #tempout.write("\n")
                         gettingsizefor = mymedia[media].getpath() + "//" + mfile
-                        print(gettingsizefor)
-                        if not gettingsizefor:
-                            print(getfilesize(gettingsizefor))
+                        tempout.write("PATH " + gettingsizefor)
+                        tempout.write("\n")
+                        if not gettingsizefor == '':
+                            tempout.write("SIZE " + str(getfilesize(gettingsizefor)))
+                            tempout.write("\n")
 
                         #this is an exact file match
                         if mfile == files:
                             mymedia[media].setduplicate(True)
                             duplicatecount += 1
                             mymedia[media].setmediadirsize(getmediadirsizemymedia[media].getpath() + "//" + myfile(mymedia[media].getpath()))
+                            match.append(mfile + " " + files)
+
 
                         #now lets check if the directory has this season and episode (file in different name)
                         if mymedia[media].getepisode() == tempcepisode:
-                            print("match")
-                            mymedia[media].setduplicate(True)
+                            tempout.write("comparematch")
+                            tempout.write("\n")
+                            mymedia[media].setduplicate(True) 
                             duplicatecount += 1
                             ##exit()
 
+                        tempout.write("\n")
 
                     targetfilenames.append(files)
 
                     stype,stv = getmediatype(files)
                     mymedia[media].settempdata(stv)
 
-                #remove directory for duplicate files
-                if mymedia[media].getduplicate():
-                    shutil.move(mymedia[media].getpath(), pathtomoveto)
+                
 
-                totalrecoversize += mymedia[media].getmediadirsize()
-                mymedia[media].settargetfilenames(targetfilenames)
+
+                #remove directory for duplicate files
+                #if mymedia[media].getduplicate():
+                    #shutil.move(mymedia[media].getpath(), pathtomoveto)
+                    #pass
+
+                #totalrecoversize += mymedia[media].getmediadirsize()
+                #mymedia[media].settargetfilenames(targetfilenames)
 
                 #move file if not a duplicate and filename exists then move dir
-                if not mymedia[media].getduplicate():
-                    for mfile in mymedia[media].getfilenames():
-                        if not mfile == '':
-                            movemedia.write(mfile + "\n")
+                #if not mymedia[media].getduplicate():
+                #    for mfile in mymedia[media].getfilenames():
+                #       if not mfile == '':
+                #            movemedia.write(mfile + "\n")
 
-                ##exit()
+
+                tempout.write("======================================================\n")
 
             else:
                 mymedia[media].setvalidstate(False)
@@ -170,7 +199,7 @@ for media in dirlist:
         skipped.write(media + '\n')
 
 
-        
+print(str(match))      
 
 #print(mymedia["Conan.2016.11.17.Adam.Sandler.720p.HDTV.x264-CROOKS"].getname())
 #print(mymedia["Conan.2016.11.17.Adam.Sandler.720p.HDTV.x264-CROOKS"].gettype())
@@ -220,8 +249,8 @@ for item in dirlist:
         print(mymedia[item].getduplicate())
         print("[MEDIADIRSIZE:]", end="")
         print(mymedia[item].getmediadirsize())   
-        print("[COMPARE not object:]", end="")
-        print(str(compare))
+        #print("[COMPARE not object:]", end="")
+        #print(str(compare))
 
 
         print("[DC:]" + str(duplicatecount))
@@ -265,8 +294,8 @@ for item in dirlist:
         logfile.write(str(mymedia[item].getduplicate()))
         logfile.write("\n[MEDIADIRSIZE:]")
         logfile.write(str(mymedia[item].getmediadirsize()))  
-        logfile.write("\n[COMPARE not object:]")
-        logfile.write(str(compare))
+        #logfile.write("\n[COMPARE not object:]")
+        #logfile.write(str(compare))
 
         logfile.write("\n")
         logfile.write(120*"-")

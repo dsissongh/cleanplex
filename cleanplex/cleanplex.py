@@ -35,6 +35,8 @@ validstatemedia = 0
 duplicatecount = 0
 totalrecoversize = 0
 
+match = []
+
 dirlist.sort()
 mymedia = {}
 #loop through the directory listing
@@ -109,7 +111,7 @@ for media in dirlist:
                 #loop through files in season dir and compare
 
                 targetfilenames = []
-                match = []
+                
 
                 #loop through files in a season subdirectory
                 for files in subdirlist:
@@ -123,7 +125,8 @@ for media in dirlist:
                         #tempout.write("\n")
                         tempcepisode = tempcinfo[0][2]
                         tempout.write("\n")
-                        tempout.write("EPISODE " + unfixseason(str(tempcepisode)))
+                        aepisode = unfixseason(str(tempcepisode))
+                        tempout.write("EPISODE " + aepisode)
                         tempout.write("\n")
                         tempout.write("PATH " + dirtoloop)
                         tempout.write("\n")
@@ -137,7 +140,8 @@ for media in dirlist:
                         tempout.write("file to compare\n")
                         tempout.write(mfile)
                         tempout.write("\n")
-                        tempout.write("EPISODE " + unfixseason(mymedia[media].getepisode()))
+                        bepisode = unfixseason(mymedia[media].getepisode())
+                        tempout.write("EPISODE " + bepisode)
                         tempout.write("\n")
                         #tempout.write("PATH " + mymedia[media].getpath())
                         #tempout.write("\n")
@@ -164,7 +168,14 @@ for media in dirlist:
                             duplicatecount += 1
                             ##exit()
 
+                        if aepisode == bepisode:
+                            tempout.write("\n")
+                            tempout.write("Episode match")
+                            match.append(mfile + " " + files)
+
                         tempout.write("\n")
+
+
 
                     targetfilenames.append(files)
 
@@ -199,7 +210,7 @@ for media in dirlist:
         skipped.write(media + '\n')
 
 
-print(str(match))      
+
 
 #print(mymedia["Conan.2016.11.17.Adam.Sandler.720p.HDTV.x264-CROOKS"].getname())
 #print(mymedia["Conan.2016.11.17.Adam.Sandler.720p.HDTV.x264-CROOKS"].gettype())
@@ -303,6 +314,12 @@ for item in dirlist:
     else:
         """Drill down on the rest to check out the usage"""
         showdirs.write(item+"\n")
+
+#print(str(match))     
+for item in match:
+    print(item)
+    print("....................................\n")
+
 
 showdirs.close()
 logfile.close()

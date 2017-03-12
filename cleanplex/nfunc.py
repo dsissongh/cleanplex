@@ -1,9 +1,10 @@
 import os
 
 def checkshowdir(path):
+	showdir = False
 	subdir = os.listdir(path)
 	for item in subdir:
 		if item[:6] == "Season":
-			return True
-		else:
-			return False
+			showdir = True
+
+	return showdir

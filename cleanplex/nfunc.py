@@ -89,3 +89,34 @@ def checkshowdirectory(path, titles):
             newshow = path + filetocheck
     
     return newshow
+
+
+def fixseason(season):
+	''' converts any 2 digit season that starts with a 0 to a 1 digit season '''
+	newseason = ""
+	if season[0] == "0":
+		newseason = season[1:]
+	else:
+		newseason = season
+
+	return newseason
+
+
+def unfixseason(season):
+	''' takes a 1 digit season and converts it to 2 digit starting with 0 '''
+	newseason = ""
+	if len(season) == 1:
+		newseason = '0' + season[0]
+	else:
+		newseason = season
+
+	return newseason
+
+def checkforepisode(path, episode):
+	listit = []
+	files = os.listdir(path)
+	for file in files:
+		if not os.path.isdir(path + "//" + file):
+			listit.append(file)
+
+	return listit

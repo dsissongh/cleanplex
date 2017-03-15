@@ -8,11 +8,14 @@ from nfunc import getfileextensions
 from nfunc import getlistofpossibletitles
 from nfunc import getmediatype
 from nfunc import checkshowdirectory
+from nfunc import fixseason
+from nfunc import unfixseason
+from nfunc import checkforepisode
 
 rootpath = "//mnt//h//TV//"
 ncleanplex = 'ncleanplex.log'
 
-fileebad = ['idx', 'mkv', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'avi', 'mp4', 'nfo', 'jpg', 'srt']
+fileebad = ['idx', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'nfo', 'jpg', 'srt']
 fileegood = ['mkv', 'avi', 'mp4']
 
 ncleanplexlog = open(ncleanplex, 'w+')
@@ -23,6 +26,7 @@ notfound = open("notfound.txt", 'w+')
 disallowed = ['Thumbs.db', '_UNPACK_']
 
 directory = natsorted(os.listdir(rootpath))
+validfilestopotentiallymove = 0
 nonshow = 0
 allext = []
 newext = []
@@ -46,7 +50,6 @@ for item in directory:
 			nonshow += 1
 
 			#lets figure out what show it belongs too
-
 			info = getmediatype(item)
 			print(str(info[1]))
 			print(len(info[1]))
@@ -64,10 +67,57 @@ for item in directory:
 				else:
 					notfound.write(info[1][0][0] + "\n")
 
+			#now, lets see if it has one of the accepted files
+			validfileindir = False
+			filesindir = os.listdir(rootpath + item)
+			for file in filesindir:
+				fileext = file[-3:]
+				if fileext.lower() in fileegood:
+					if not "sample" in file.lower():
+						print(file)
+						print(str(info))
+						print(str(info[1]))
+						print(len(info[1]))
+						if len(info[1]) > 0:
+							print(len(info[1]))
+							if len(info[1][0][0]) > 2:
+								validfileindir = True
+								validfilestopotentiallymove += 1
+								fileseason = info[1][0][1]
+								fileepisode = info[1][0][2]
+								print(fileseason)
+								print(fileepisode)
+								#if we get this far, we have a valid file 
+								#lets see if one already exists
+								season2check = "Season " + fixseason(fileepisode)
+								print(season2check)
 
-			extension = getfileextensions(rootpath + item)
-			print(str(extension))
-			allext = allext + extension
+								print(actualtitle + "//" + season2check)
+								#checking the directory
+								if os.path.isdir(actualtitle + "//" + season2check):
+									print("season dir exists \n")
+									
+									#check if the episode exists
+									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode)
+									print(str(returnlist))
+
+								else:
+									try:
+										os.makedirs(actualtitle + "//" + season2check)
+									except:
+										pass
+
+				else:
+					pass
+					#list these files somewhere
+
+
+
+			#extension = getfileextensions(rootpath + item)
+			#print(str(extension))
+			#allext = allext + extension
+
+
 		else:
 			#print(item)
 			showtitles.write(item + "\n")
@@ -79,6 +129,7 @@ for item in directory:
 newext = list(set(allext))
 print("NONSHOWDIR: %d" % nonshow)
 print(str(newext))
+print(validfilestopotentiallymove)
 
 showtitles.close()
 ncleanplexlog.close()

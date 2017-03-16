@@ -117,6 +117,22 @@ def checkforepisode(path, episode):
 	files = os.listdir(path)
 	for file in files:
 		if not os.path.isdir(path + "//" + file):
-			listit.append(file)
+			info = getmediatype(file)
+			if len(info[1]) > 0:
+				if len(info[1][0]) > 2:
+					fileseason = info[1][0][1]
+					fileepisode = info[1][0][2]
+					if fileepisode == episode:
+						existingfilesize = os.path.getsize(path + "//" + file)
+						listit.append(file + fileseason + " " + str(existingfilesize))
 
 	return listit
+
+
+def gettitlefromfile(file):
+	info = getmediatype(file)
+	title = ''
+	if len(info[1]) > 0:
+		if len(info[1][0]) > 2:
+			title = info[1][0][0]
+	return title

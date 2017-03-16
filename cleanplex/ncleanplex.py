@@ -11,6 +11,7 @@ from nfunc import checkshowdirectory
 from nfunc import fixseason
 from nfunc import unfixseason
 from nfunc import checkforepisode
+from nfunc import gettitlefromfile
 
 rootpath = "//mnt//h//TV//"
 ncleanplex = 'ncleanplex.log'
@@ -44,7 +45,7 @@ for item in directory:
 		#This is the main loop - if the item is not a show directory
 		if not check:
 			print("------------------------------------------------------------------\n")
-			ncleanplexlog.write("------------------------------------------------------------------\n")
+			
 			print("notshowdir: " + item)
 			#ncleanplexlog.write(item + "\n")
 			nonshow += 1
@@ -54,16 +55,17 @@ for item in directory:
 			print(str(info[1]))
 			print(len(info[1]))
 			if len(info[1]) > 0:
+				ncleanplexlog.write("------------------------------------------------------------------\n")
 				print(info[1][0][0])
-				ncleanplexlog.write(info[1][0][0] + "\n")
+				#ncleanplexlog.write(info[1][0][0] + "\n")
 				titles = getlistofpossibletitles(info[1][0][0],"showtitles.dat")
 				print(str(titles))
-				ncleanplexlog.write(str(titles) + "\n")
+				#ncleanplexlog.write(str(titles) + "\n")
 				actualtitle = checkshowdirectory(rootpath, titles)
 
 				if len(actualtitle) > 0:
 					print(actualtitle)
-					ncleanplexlog.write(actualtitle + "\n")
+					#ncleanplexlog.write(actualtitle + "\n")
 				else:
 					notfound.write(info[1][0][0] + "\n")
 
@@ -85,11 +87,11 @@ for item in directory:
 								validfilestopotentiallymove += 1
 								fileseason = info[1][0][1]
 								fileepisode = info[1][0][2]
-								print(fileseason)
-								print(fileepisode)
+								print("S: " + fileseason)
+								print("E: " + fileepisode)
 								#if we get this far, we have a valid file 
 								#lets see if one already exists
-								season2check = "Season " + fixseason(fileepisode)
+								season2check = "Season " + fixseason(fileseason)
 								print(season2check)
 
 								print(actualtitle + "//" + season2check)
@@ -99,7 +101,23 @@ for item in directory:
 									
 									#check if the episode exists
 									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode)
-									print(str(returnlist))
+									print("RL: " + str(returnlist))
+									titlefromfile = gettitlefromfile(file)
+
+									if titlefromfile == '':
+										status = "replace filename with filename from dir"
+									else:
+										status = "no rename"
+
+
+									sourcefilesize = os.path.getsize(rootpath + item + "//" + file)
+
+									ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
+									ncleanplexlog.write(rootpath + item + "\n")
+									ncleanplexlog.write(file + " " + str(sourcefilesize) + "\n")
+									ncleanplexlog.write('FFT: ' + titlefromfile + "\n")
+									ncleanplexlog.write(status + "\n")
+									ncleanplexlog.write(str(returnlist) + "\n")
 
 								else:
 									try:

@@ -112,8 +112,10 @@ def unfixseason(season):
 
 	return newseason
 
-def checkforepisode(path, episode):
+def checkforepisode(path, episode, minsize):
+	currentsize = 0
 	listit = []
+	removeit = []
 	files = os.listdir(path)
 	for file in files:
 		if not os.path.isdir(path + "//" + file):
@@ -123,10 +125,16 @@ def checkforepisode(path, episode):
 					fileseason = info[1][0][1]
 					fileepisode = info[1][0][2]
 					if fileepisode == episode:
-						existingfilesize = os.path.getsize(path + "//" + file)
-						listit.append(file + fileseason + " " + str(existingfilesize))
+						existingfilesize = os.path.getsize(path + "//" + file)/1000000
+						if existingfilesize >= minsize:
+							if existingfilesize < currentsize:
+								currentsize = existingfilesize
+								removeit.append("remove " + str(listit))
+								listit = [str(existingfilesize) + " " + file + fileseason]
 
-	return listit
+
+	newlist = listit + removeit
+	return newlist
 
 
 def gettitlefromfile(file):

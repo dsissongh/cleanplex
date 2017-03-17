@@ -18,6 +18,8 @@ ncleanplex = 'ncleanplex.log'
 
 fileebad = ['idx', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'nfo', 'jpg', 'srt']
 fileegood = ['mkv', 'avi', 'mp4']
+minsizeinmb = 350
+
 
 ncleanplexlog = open(ncleanplex, 'w+')
 shutil.copyfile("showtitles.txt", "showtitles.dat")
@@ -31,6 +33,7 @@ validfilestopotentiallymove = 0
 nonshow = 0
 allext = []
 newext = []
+sizes = []
 
 allowed = True
 #loop through root directory
@@ -100,7 +103,7 @@ for item in directory:
 									print("season dir exists \n")
 									
 									#check if the episode exists
-									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode)
+									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode, minsizeinmb)
 									print("RL: " + str(returnlist))
 									titlefromfile = gettitlefromfile(file)
 
@@ -110,14 +113,15 @@ for item in directory:
 										status = "no rename"
 
 
-									sourcefilesize = os.path.getsize(rootpath + item + "//" + file)
+									sourcefilesize = os.path.getsize(rootpath + item + "//" + file)/1000000
+									sizes.append(sourcefilesize)
 
 									ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
 									ncleanplexlog.write(rootpath + item + "\n")
 									ncleanplexlog.write(file + " " + str(sourcefilesize) + "\n")
 									ncleanplexlog.write('FFT: ' + titlefromfile + "\n")
 									ncleanplexlog.write(status + "\n")
-									ncleanplexlog.write(str(returnlist) + "\n")
+									ncleanplexlog.write("RL: " + str(returnlist) + "\n")
 
 								else:
 									try:
@@ -148,6 +152,8 @@ newext = list(set(allext))
 print("NONSHOWDIR: %d" % nonshow)
 print(str(newext))
 print(validfilestopotentiallymove)
+sizes.sort()
+print(str(sizes))
 
 showtitles.close()
 ncleanplexlog.close()

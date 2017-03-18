@@ -45,29 +45,38 @@ for item in directory:
 	if allowed:
 
 		check = checkshowdir(rootpath + item)
-		#This is the main loop - if the item is not a show directory
+		'''
+		This is the main loop - if the item is not a show directory
+		Enter this loop if the directory does not contain a Season subdirectory
+		'''
 		if not check:
-			print("------------------------------------------------------------------\n")
 			
-			print("notshowdir: " + item)
+			
+			##print("notshowdir: " + item)
 			#ncleanplexlog.write(item + "\n")
 			nonshow += 1
 
 			#lets figure out what show it belongs too
 			info = getmediatype(item)
-			print(str(info[1]))
-			print(len(info[1]))
+			##print(str(info[1]))
+			##print(len(info[1]))
+
+			'''
+			Enter this loop when the directory name can be decoded into a showtitle, season
+			and episode
+			'''
 			if len(info[1]) > 0:
 				ncleanplexlog.write("------------------------------------------------------------------\n")
-				print(info[1][0][0])
+				##print(info[1][0][0])
 				#ncleanplexlog.write(info[1][0][0] + "\n")
 				titles = getlistofpossibletitles(info[1][0][0],"showtitles.dat")
-				print(str(titles))
+				##print(str(titles))
 				#ncleanplexlog.write(str(titles) + "\n")
 				actualtitle = checkshowdirectory(rootpath, titles)
 
 				if len(actualtitle) > 0:
-					print(actualtitle)
+					pass
+					##print(actualtitle)
 					#ncleanplexlog.write(actualtitle + "\n")
 				else:
 					notfound.write(info[1][0][0] + "\n")
@@ -79,32 +88,37 @@ for item in directory:
 				fileext = file[-3:]
 				if fileext.lower() in fileegood:
 					if not "sample" in file.lower():
-						print(file)
-						print(str(info))
-						print(str(info[1]))
-						print(len(info[1]))
+						##print(file)
+						##print(str(info))
+						##print(str(info[1]))
+						##print(len(info[1]))
 						if len(info[1]) > 0:
-							print(len(info[1]))
+							##print(len(info[1]))
 							if len(info[1][0][0]) > 2:
+								print("------------------------------------------------------------------\n")
+								print(item.strip())
+								print(actualtitle + "\n")
+
+
 								validfileindir = True
 								validfilestopotentiallymove += 1
 								fileseason = info[1][0][1]
 								fileepisode = info[1][0][2]
-								print("S: " + fileseason)
-								print("E: " + fileepisode)
+								##print("S: " + fileseason)
+								##print("E: " + fileepisode)
 								#if we get this far, we have a valid file 
 								#lets see if one already exists
 								season2check = "Season " + fixseason(fileseason)
-								print(season2check)
+								##print(season2check)
 
-								print(actualtitle + "//" + season2check)
+								##print(actualtitle + "//" + season2check)
 								#checking the directory
 								if os.path.isdir(actualtitle + "//" + season2check):
-									print("season dir exists \n")
+									##print("season dir exists \n")
 									
 									#check if the episode exists
 									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode, minsizeinmb)
-									print("RL: " + str(returnlist))
+									##print("RL: " + str(returnlist))
 									titlefromfile = gettitlefromfile(file)
 
 									if titlefromfile == '':
@@ -149,11 +163,11 @@ for item in directory:
 	allowed = True
 
 newext = list(set(allext))
-print("NONSHOWDIR: %d" % nonshow)
-print(str(newext))
-print(validfilestopotentiallymove)
+##print("NONSHOWDIR: %d" % nonshow)
+##print(str(newext))
+##print(validfilestopotentiallymove)
 sizes.sort()
-print(str(sizes))
+##print(str(sizes))
 
 showtitles.close()
 ncleanplexlog.close()

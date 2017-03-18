@@ -126,14 +126,19 @@ def checkforepisode(path, episode, minsize):
 					fileepisode = info[1][0][2]
 					if fileepisode == episode:
 						existingfilesize = os.path.getsize(path + "//" + file)/1000000
+						listit = [str(existingfilesize) + " " + file + fileseason]
+
+						'''
+						
 						if existingfilesize >= minsize:
 							if existingfilesize < currentsize:
 								currentsize = existingfilesize
-								removeit.append("remove " + str(listit))
+								removeit.append("remove " + file)
+								#print("Remove: " + )
 								listit = [str(existingfilesize) + " " + file + fileseason]
+						'''
 
-
-	newlist = listit + removeit
+	newlist = listit #+ removeit
 	return newlist
 
 

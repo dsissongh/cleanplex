@@ -95,13 +95,12 @@ for item in directory:
 						if len(info[1]) > 0:
 							##print(len(info[1]))
 							if len(info[1][0][0]) > 2:
-								print("------------------------------------------------------------------\n")
-								print(item.strip())
-								print(actualtitle + "\n")
+
 
 
 								validfileindir = True
 								validfilestopotentiallymove += 1
+								filenamereplace = info[1][0][0]
 								fileseason = info[1][0][1]
 								fileepisode = info[1][0][2]
 								##print("S: " + fileseason)
@@ -111,21 +110,32 @@ for item in directory:
 								season2check = "Season " + fixseason(fileseason)
 								##print(season2check)
 
+
+								print("------------------------------------------------------------------\n")
+								print("RAW: " + item.strip())
+								print("SHOWDIR: " + actualtitle)
+								print("SEASON: " + fileseason)
+								print("EPISODE: " + fileepisode)
+
 								##print(actualtitle + "//" + season2check)
 								#checking the directory
 								if os.path.isdir(actualtitle + "//" + season2check):
-									##print("season dir exists \n")
+									print("SEASONDIR: exists")
 									
 									#check if the episode exists
 									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode, minsizeinmb)
-									##print("RL: " + str(returnlist))
+									print("EXISTING EPISODES: " + str(returnlist))
+									print("SOURCE FILE: " + file)
 									titlefromfile = gettitlefromfile(file)
 
 									if titlefromfile == '':
-										status = "replace filename with filename from dir"
-									else:
-										status = "no rename"
 
+										status = "RENAME FILE: " + filenamereplace
+									else:
+										status = "RENAME FILE: no"
+
+
+									print(status)
 
 									sourcefilesize = os.path.getsize(rootpath + item + "//" + file)/1000000
 									sizes.append(sourcefilesize)
@@ -140,6 +150,7 @@ for item in directory:
 								else:
 									try:
 										os.makedirs(actualtitle + "//" + season2check)
+										print("SEASONDIR: " + season2check + " created")
 									except:
 										pass
 

@@ -113,7 +113,8 @@ def unfixseason(season):
 	return newseason
 
 def checkforepisode(path, episode, minsize):
-	currentsize = 0
+	keepfilesize = float(9999999999)
+	keepfilename = ''
 	listit = []
 	removeit = []
 	files = os.listdir(path)
@@ -126,18 +127,32 @@ def checkforepisode(path, episode, minsize):
 					fileepisode = info[1][0][2]
 					if fileepisode == episode:
 						existingfilesize = os.path.getsize(path + "//" + file)/1000000
-						listit = [str(existingfilesize) + " " + file + fileseason]
-
-						'''
 						
-						if existingfilesize >= minsize:
-							if existingfilesize < currentsize:
-								currentsize = existingfilesize
-								removeit.append("remove " + file)
+						
+						if existingfilesize > minsize:
+							#print("in greater than minsize")
+							#file is bigger than minimum filesize
+							#print("compare " + str(existingfilesize) + " and " + str(keepfilesize))
+							if existingfilesize < keepfilesize:
+								#print("in less than keep")
+								#existing file less than keep file
+								#this file should be the exising file
+								keepfilesize = existingfilesize
+								keepfilename = file
+								#removeit.append("remove " + file)
 								#print("Remove: " + )
-								listit = [str(existingfilesize) + " " + file + fileseason]
-						'''
+								#listit = [str(existingfilesize) + " " + file + fileseason]
+							else:
+								pass
+						else:
+							pass
+							#need to remove these files (smaller than minimum)		
 
+						listit.append(str(existingfilesize) + " " + file)
+
+
+
+	listit.append("[K] " + str(keepfilesize) + " " + keepfilename)
 	newlist = listit #+ removeit
 	return newlist
 

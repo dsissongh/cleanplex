@@ -66,7 +66,7 @@ for item in directory:
 			and episode
 			'''
 			if len(info[1]) > 0:
-				ncleanplexlog.write("------------------------------------------------------------------\n")
+				#ncleanplexlog.write("------------------------------------------------------------------\n")
 				##print(info[1][0][0])
 				#ncleanplexlog.write(info[1][0][0] + "\n")
 				titles = getlistofpossibletitles(info[1][0][0],"showtitles.dat")
@@ -112,19 +112,27 @@ for item in directory:
 
 
 								print("------------------------------------------------------------------\n")
+								ncleanplexlog.write("------------------------------------------------------------------\n")
 								print("RAW: " + item.strip())
+								ncleanplexlog.write("RAW: " + item.strip() + "\n")
 								print("SHOWDIR: " + actualtitle)
+								ncleanplexlog.write("SHOWDIR: " + actualtitle + "\n")
 								print("SEASON: " + fileseason)
+								ncleanplexlog.write("SEASON: " + fileseason + "\n")
 								print("EPISODE: " + fileepisode)
+								ncleanplexlog.write("EPISODE: " + fileepisode + "\n")
 
 								##print(actualtitle + "//" + season2check)
 								#checking the directory
 								if os.path.isdir(actualtitle + "//" + season2check):
+									ncleanplexlog.write("SEASONDIR: exists" + "\n")
 									print("SEASONDIR: exists")
 									
 									#check if the episode exists
 									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode, minsizeinmb)
+									ncleanplexlog.write("EXISTING EPISODES: " + str(returnlist) + "\n")
 									print("EXISTING EPISODES: " + str(returnlist))
+									ncleanplexlog.write("SOURCE FILE: " + file + "\n")
 									print("SOURCE FILE: " + file)
 									titlefromfile = gettitlefromfile(file)
 
@@ -134,18 +142,23 @@ for item in directory:
 									else:
 										status = "RENAME FILE: no"
 
-
+									ncleanplexlog.write(status + "\n")
 									print(status)
 
 									sourcefilesize = os.path.getsize(rootpath + item + "//" + file)/1000000
 									sizes.append(sourcefilesize)
 
-									ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
-									ncleanplexlog.write(rootpath + item + "\n")
-									ncleanplexlog.write(file + " " + str(sourcefilesize) + "\n")
-									ncleanplexlog.write('FFT: ' + titlefromfile + "\n")
-									ncleanplexlog.write(status + "\n")
-									ncleanplexlog.write("RL: " + str(returnlist) + "\n")
+									print("SOURCE FILE SIZE: " + str(sourcefilesize))
+									ncleanplexlog.write("SOURCE FILE SIZE: " + str(sourcefilesize) + "\n")
+
+
+
+									#ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
+									#ncleanplexlog.write(rootpath + item + "\n")
+									#ncleanplexlog.write(file + " " + str(sourcefilesize) + "\n")
+									#ncleanplexlog.write('FFT: ' + titlefromfile + "\n")
+									#ncleanplexlog.write(status + "\n")
+									#ncleanplexlog.write("RL: " + str(returnlist) + "\n")
 
 								else:
 									try:

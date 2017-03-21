@@ -113,7 +113,7 @@ def unfixseason(season):
 	return newseason
 
 def checkforepisode(path, episode, minsize):
-	keepfilesize = float(9999999999)
+	keepfilesize = 9999999999
 	keepfilename = ''
 	listit = []
 	removeit = []
@@ -148,11 +148,11 @@ def checkforepisode(path, episode, minsize):
 							pass
 							#need to remove these files (smaller than minimum)		
 
-						listit.append(str(existingfilesize) + " " + file)
+						listit.append("[" + str(existingfilesize) + "]" + file)
 
+	if not(str(keepfilesize)) == '9999999999':
+		listit.append("[K][" + str(keepfilesize) + "]" + keepfilename)
 
-
-	listit.append("[K] " + str(keepfilesize) + " " + keepfilename)
 	newlist = listit #+ removeit
 	return newlist
 

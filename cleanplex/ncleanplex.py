@@ -132,6 +132,23 @@ for item in directory:
 									returnlist = checkforepisode(actualtitle + "//" + season2check, fileepisode, minsizeinmb)
 									ncleanplexlog.write("EXISTING EPISODES: " + str(returnlist) + "\n")
 									print("EXISTING EPISODES: " + str(returnlist))
+
+									missing = True
+									for eep in returnlist:
+										prefix = "DELETE: "
+										if '[K]' in eep:
+											missing = False
+											prefix = "KEEP: "
+											element1 = str(eep).split("]")
+											element2 = element1[1].split("[")
+											existingkeepsize = element2[1]
+											ncleanplexlog.write(prefix + eep + "\n")
+											print(prefix + eep)
+											ncleanplexlog.write("EXIST KEEP SIZE: " + existingkeepsize + "\n")
+											print("EXIST KEEP SIZE: " + existingkeepsize)
+
+											
+
 									ncleanplexlog.write("SOURCE FILE: " + file + "\n")
 									print("SOURCE FILE: " + file)
 									titlefromfile = gettitlefromfile(file)
@@ -151,7 +168,16 @@ for item in directory:
 									print("SOURCE FILE SIZE: " + str(sourcefilesize))
 									ncleanplexlog.write("SOURCE FILE SIZE: " + str(sourcefilesize) + "\n")
 
-
+									if missing:
+										#we should copy the file
+										ncleanplexlog.write("=======> Copy the source file to destination\n")
+									else:
+										if float(existingkeepsize) > sourcefilesize:
+											#we should copy and replace the file
+											ncleanplexlog.write("=======> Copy the source file and replace destination\n")
+										else:
+											#we leave the file and delete the source file
+											ncleanplexlog.write("=======> Delete the source file\n")
 
 									#ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
 									#ncleanplexlog.write(rootpath + item + "\n")

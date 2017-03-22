@@ -3,10 +3,14 @@ import re
 
 def checkshowdir(path):
 	showdir = False
-	subdir = os.listdir(path)
-	for item in subdir:
-		if item[:6] == "Season":
-			showdir = True
+
+	try:
+		subdir = os.listdir(path)
+		for item in subdir:
+			if item[:6] == "Season":
+				showdir = True
+	except:
+		pass
 
 	return showdir
 

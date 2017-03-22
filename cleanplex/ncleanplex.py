@@ -31,6 +31,11 @@ disallowed = ['Thumbs.db', '_UNPACK_']
 directory = natsorted(os.listdir(rootpath))
 validfilestopotentiallymove = 0
 nonshow = 0
+totalshowsprocessed = 0
+movein = 0
+sourcedelete = 0
+replacein = 0
+
 allext = []
 newext = []
 sizes = []
@@ -168,16 +173,27 @@ for item in directory:
 									print("SOURCE FILE SIZE: " + str(sourcefilesize))
 									ncleanplexlog.write("SOURCE FILE SIZE: " + str(sourcefilesize) + "\n")
 
+
+									totalshowsprocessed += 1
+
+									#make the decision
 									if missing:
 										#we should copy the file
+										print("=======> Copy the source file to destination")
 										ncleanplexlog.write("=======> Copy the source file to destination\n")
+										print("copy " + rootpath + item + "//" + file + " to destination")
+										movein += 1
 									else:
 										if float(existingkeepsize) > sourcefilesize:
 											#we should copy and replace the file
+											print("=======> Copy the source file and replace destination")
 											ncleanplexlog.write("=======> Copy the source file and replace destination\n")
+											replacein += 1
 										else:
 											#we leave the file and delete the source file
+											print("=======> Delete the source file")
 											ncleanplexlog.write("=======> Delete the source file\n")
+											sourcedelete += 1
 
 									#ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
 									#ncleanplexlog.write(rootpath + item + "\n")
@@ -218,6 +234,18 @@ newext = list(set(allext))
 ##print(validfilestopotentiallymove)
 sizes.sort()
 ##print(str(sizes))
+
+ncleanplexlog.write("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
+print("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
+
+ncleanplexlog.write("\nMOVEIN: " + str(movein))
+print("\nMOVEIN: " + str(movein))
+
+ncleanplexlog.write("\nSOURCEDELETE: " + str(sourcedelete))
+print("\nSOURCEDELETE: " + str(sourcedelete))
+
+ncleanplexlog.write("\nREPLACEIN: " + str(replacein))
+print("\nREPLACEIN: " + str(replacein))
 
 showtitles.close()
 ncleanplexlog.close()

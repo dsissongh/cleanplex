@@ -140,6 +140,7 @@ for item in directory:
 
 									missing = True
 									for eep in returnlist:
+										efkeep = ''
 										prefix = "DELETE: "
 										if '[K]' in eep:
 											missing = False
@@ -147,6 +148,9 @@ for item in directory:
 											element1 = str(eep).split("]")
 											element2 = element1[1].split("[")
 											existingkeepsize = element2[1]
+											efkeep = str(element1[2])
+											ncleanplexlog.write("EF: " + str(element1[2]) + "\n")
+											print("EF: " + str(element1[2]))
 											ncleanplexlog.write(prefix + eep + "\n")
 											print(prefix + eep)
 											ncleanplexlog.write("EXIST KEEP SIZE: " + existingkeepsize + "\n")
@@ -158,9 +162,11 @@ for item in directory:
 									print("SOURCE FILE: " + file)
 									titlefromfile = gettitlefromfile(file)
 
+									replacefilename = False
 									if titlefromfile == '':
 
 										status = "RENAME FILE: " + filenamereplace
+										replacefilename = True
 									else:
 										status = "RENAME FILE: no"
 
@@ -179,20 +185,35 @@ for item in directory:
 									#make the decision
 									if missing:
 										#we should copy the file
+										destinationtocopyto = actualtitle + "//" + season2check + "//"
+										if replacefilename:
+											file = filenamereplace
+
 										print("=======> Copy the source file to destination")
 										ncleanplexlog.write("=======> Copy the source file to destination\n")
-										print("copy " + rootpath + item + "//" + file + " to destination")
+										print("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + file)
+										ncleanplexlog.write("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + file + "\n")
 										movein += 1
 									else:
 										if float(existingkeepsize) > sourcefilesize:
 											#we should copy and replace the file
+											destinationtocopyto = actualtitle + "//" + season2check
 											print("=======> Copy the source file and replace destination")
 											ncleanplexlog.write("=======> Copy the source file and replace destination\n")
+
+
+											print("delete " + destinationtocopyto + "//" + efkeep)
+											ncleanplexlog.write("delete " + destinationtocopyto + "//" + efkeep + "\n")
+											print("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto)
+											ncleanplexlog.write("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + "\n")
+
 											replacein += 1
 										else:
 											#we leave the file and delete the source file
 											print("=======> Delete the source file")
 											ncleanplexlog.write("=======> Delete the source file\n")
+											print("delete " + rootpath + item + "//" + file )
+											ncleanplexlog.write("delete " + rootpath + item + "//" + file)
 											sourcedelete += 1
 
 									#ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
@@ -236,16 +257,16 @@ sizes.sort()
 ##print(str(sizes))
 
 ncleanplexlog.write("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
-print("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
+print("TOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
 
 ncleanplexlog.write("\nMOVEIN: " + str(movein))
-print("\nMOVEIN: " + str(movein))
+print("MOVEIN: " + str(movein))
 
 ncleanplexlog.write("\nSOURCEDELETE: " + str(sourcedelete))
-print("\nSOURCEDELETE: " + str(sourcedelete))
+print("SOURCEDELETE: " + str(sourcedelete))
 
 ncleanplexlog.write("\nREPLACEIN: " + str(replacein))
-print("\nREPLACEIN: " + str(replacein))
+print("REPLACEIN: " + str(replacein))
 
 showtitles.close()
 ncleanplexlog.close()

@@ -168,3 +168,11 @@ def gettitlefromfile(file):
 		if len(info[1][0]) > 2:
 			title = info[1][0][0]
 	return title
+
+
+def formatsize(num, suffix='B'):
+    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'Yi', suffix)

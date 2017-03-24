@@ -12,6 +12,7 @@ from nfunc import fixseason
 from nfunc import unfixseason
 from nfunc import checkforepisode
 from nfunc import gettitlefromfile
+from nfunc import formatsize
 
 rootpath = "//mnt//h//TV//"
 ncleanplex = 'ncleanplex.log'
@@ -35,6 +36,9 @@ totalshowsprocessed = 0
 movein = 0
 sourcedelete = 0
 replacein = 0
+totalsourcespacecleaned = 0
+totalreplacespace = 0
+totalreplacesavedspace = 0
 
 allext = []
 newext = []
@@ -187,34 +191,66 @@ for item in directory:
 										#we should copy the file
 										destinationtocopyto = actualtitle + "//" + season2check + "//"
 										if replacefilename:
-											file = filenamereplace
+											dfile = filenamereplace + " - S" + fileseason + "E" +fileepisode + file[-4:]
+										else:
+											dfile = file
 
 										print("=======> Copy the source file to destination")
 										ncleanplexlog.write("=======> Copy the source file to destination\n")
-										print("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + file)
-										ncleanplexlog.write("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + file + "\n")
+										print("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + dfile)
+										ncleanplexlog.write("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + dfile + "\n")
+										try:
+											shutil.move(rootpath + item + "//" + file,destinationtocopyto + dfile)
+										except:
+											pass
+
 										movein += 1
 									else:
 										if float(existingkeepsize) > sourcefilesize:
 											#we should copy and replace the file
-											destinationtocopyto = actualtitle + "//" + season2check
+											destinationtocopyto = actualtitle + "//" + season2check + "//"
+											if replacefilename:
+												dfile = filenamereplace + " - S" + fileseason + "E" +fileepisode + file[-4:]
+											else:
+												dfile = file
+
 											print("=======> Copy the source file and replace destination")
 											ncleanplexlog.write("=======> Copy the source file and replace destination\n")
 
 
 											print("delete " + destinationtocopyto + "//" + efkeep)
 											ncleanplexlog.write("delete " + destinationtocopyto + "//" + efkeep + "\n")
-											print("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto)
-											ncleanplexlog.write("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + "\n")
+											
+											print("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + dfile)
+											ncleanplexlog.write("copy " + rootpath + item + "//" + file + " to " + destinationtocopyto + dfile + "\n")
+										
+											try:
+												os.remove(destinationtocopyto + "//" + efkeep)
+											except:
+												pass
+
+											try:
+												shutil.move(rootpath + item + "//" + file,destinationtocopyto + dfile)
+												totalreplacespace += os.path.getsize(destinationtocopyto + "//" + efkeep)
+												totalreplacesavedspace += os.path.getsize(rootpath + item + "//" + file)
+											except:
+												pass
 
 											replacein += 1
+
+											
 										else:
 											#we leave the file and delete the source file
 											print("=======> Delete the source file")
 											ncleanplexlog.write("=======> Delete the source file\n")
 											print("delete " + rootpath + item + "//" + file )
-											ncleanplexlog.write("delete " + rootpath + item + "//" + file)
-											sourcedelete += 1
+											ncleanplexlog.write("delete " + rootpath + item + "//" + file + "\n")
+											try:
+												totalsourcespacecleaned += os.path.getsize(rootpath + item + "//" + file)
+												os.remove(rootpath + item + "//" + file)
+												sourcedelete += 1
+											except:
+												pass
 
 									#ncleanplexlog.write(actualtitle + "//" + season2check + "\n")
 									#ncleanplexlog.write(rootpath + item + "\n")
@@ -265,8 +301,16 @@ print("MOVEIN: " + str(movein))
 ncleanplexlog.write("\nSOURCEDELETE: " + str(sourcedelete))
 print("SOURCEDELETE: " + str(sourcedelete))
 
+ncleanplexlog.write("\nSOURCESPACE: " + formatsize(totalsourcespacecleaned))
+print("SOURCESPACE: " + formatsize(totalsourcespacecleaned))
+
+
 ncleanplexlog.write("\nREPLACEIN: " + str(replacein))
 print("REPLACEIN: " + str(replacein))
+
+ncleanplexlog.write("\nRECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace))
+print("RECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace))
+
 
 showtitles.close()
 ncleanplexlog.close()

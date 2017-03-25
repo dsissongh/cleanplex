@@ -269,6 +269,9 @@ for item in directory:
 				else:
 					pass
 					#list these files somewhere
+					if file[-3:] not in fileebad:
+						print(rootpath + item + "//" + file)
+
 
 
 

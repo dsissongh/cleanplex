@@ -291,7 +291,7 @@ for item in directory:
 							print(e)
 
 					else:
-						if file[-3:] in fileebad:
+						if file[-3:].lower() in fileebad:
 							print("--" + rootpath + item + "//" + file)
 							totalrecoveredfrombadfiles += os.path.getsize(rootpath + item + "//" + file)
 							try:
@@ -299,7 +299,7 @@ for item in directory:
 							except:
 								pass
 						else:
-							print(file)
+							print(file + "not in bad list")
 
 
 

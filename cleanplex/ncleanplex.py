@@ -1,6 +1,7 @@
 
 import os
 import shutil
+import sys
 from natsort import natsorted
 
 from nfunc import checkshowdir
@@ -17,7 +18,7 @@ from nfunc import formatsize
 rootpath = "//mnt//h//TV//"
 ncleanplex = 'ncleanplex.log'
 
-fileebad = ['idx', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'nfo', 'jpg', 'srt']
+fileebad = ['idx', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'nfo', 'jpg', 'srt','txt','png','vob','ifo','bup']
 fileegood = ['mkv', 'avi', 'mp4']
 minsizeinmb = 350
 
@@ -39,6 +40,7 @@ replacein = 0
 totalsourcespacecleaned = 0
 totalreplacespace = 0
 totalreplacesavedspace = 0
+totalrecoveredfrombadfiles = 0
 
 allext = []
 newext = []
@@ -124,6 +126,8 @@ for item in directory:
 								ncleanplexlog.write("------------------------------------------------------------------\n")
 								print("RAW: " + item.strip())
 								ncleanplexlog.write("RAW: " + item.strip() + "\n")
+								print("TITLES: " + str(titles))
+								ncleanplexlog.write("TITLES: " + str(titles) + "\n")
 								print("SHOWDIR: " + actualtitle)
 								ncleanplexlog.write("SHOWDIR: " + actualtitle + "\n")
 								print("SEASON: " + fileseason)
@@ -267,11 +271,35 @@ for item in directory:
 										pass
 
 				else:
-					pass
+					#pass
 					#list these files somewhere
-					if file[-3:] not in fileebad:
-						print(rootpath + item + "//" + file)
+					if os.path.isdir(rootpath + item + "//" + file):
+						print("DIR: " + rootpath + item + "//" + file)
+						getfiles = os.listdir(rootpath + item + "//" + file)
+						for singlefile in getfiles:
 
+							print(singlefile)
+							try:
+								shutil.move(rootpath + item + "//" + file + "//" + singlefile, rootpath + item + "//" + singlefile)
+							except:
+								pass
+
+						try:
+							shutil.rmtree(rootpath + item + "//" + file)
+						except:
+							e = sys.exc_info()[0]
+							print(e)
+
+					else:
+						if file[-3:] in fileebad:
+							print("--" + rootpath + item + "//" + file)
+							totalrecoveredfrombadfiles += os.path.getsize(rootpath + item + "//" + file)
+							try:
+								os.remove(rootpath + item + "//" + file)
+							except:
+								pass
+						else:
+							print(file)
 
 
 
@@ -295,6 +323,7 @@ newext = list(set(allext))
 sizes.sort()
 ##print(str(sizes))
 
+print("------------------------------------------------------------------------------\n")
 ncleanplexlog.write("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
 print("TOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
 
@@ -314,6 +343,8 @@ print("REPLACEIN: " + str(replacein))
 ncleanplexlog.write("\nRECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace))
 print("RECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace))
 
+ncleanplexlog.write("\nRECLAIMEDFROMBAD: " + formatsize(totalrecoveredfrombadfiles))
+print("RECLAIMEDFROMBAD: " + formatsize(totalrecoveredfrombadfiles))
 
 showtitles.close()
 ncleanplexlog.close()

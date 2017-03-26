@@ -34,7 +34,7 @@
 "Timeless (2016)","Timeless"
 "Timeless.2016","Timeless"
 "Trailer.Park.Boys","Trailer Park Boys"
-"Trial.And.Error","Trial & Error"
+"Trial.And.Error.2017","Trial & Error"
 "The.Blacklist.Redemption","The Blacklist- Redemption"
 "Untold.Stories.Of.The.E.R","Untold Stories Of The E.R"
 "penn.and.teller.fool.us","Penn & Teller Fool Us"

@@ -41,6 +41,7 @@ totalsourcespacecleaned = 0
 totalreplacespace = 0
 totalreplacesavedspace = 0
 totalrecoveredfrombadfiles = 0
+emptydirsremoved = 0
 
 allext = []
 newext = []
@@ -270,6 +271,14 @@ for item in directory:
 									except:
 										pass
 
+
+					else:
+						try:
+							os.remove(rootpath + item + "//" + file)
+							print(rootpath + item + "//" + file)
+						except:
+							pass
+
 				else:
 					#pass
 					#list these files somewhere
@@ -302,6 +311,13 @@ for item in directory:
 							print(file + "not in bad list")
 
 
+
+			
+			try:
+				os.rmdir(rootpath + item)
+				emptydirsremoved += 1
+			except:
+				print(">>" + rootpath + item)
 
 			#extension = getfileextensions(rootpath + item)
 			#print(str(extension))
@@ -345,6 +361,9 @@ print("RECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace
 
 ncleanplexlog.write("\nRECLAIMEDFROMBAD: " + formatsize(totalrecoveredfrombadfiles))
 print("RECLAIMEDFROMBAD: " + formatsize(totalrecoveredfrombadfiles))
+
+ncleanplexlog.write("\nEMPTYDIRSREMOVED: " + str(emptydirsremoved))
+print("EMPTYDIRSREMOVED: " + str(emptydirsremoved))
 
 showtitles.close()
 ncleanplexlog.close()

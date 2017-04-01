@@ -15,7 +15,17 @@ from nfunc import checkforepisode
 from nfunc import gettitlefromfile
 from nfunc import formatsize
 
+import configparser
+
+
+config = configparser.ConfigParser()
+config.read("cleanplex/config.cfg")
+configelements = config['cleanplex']
+
 rootpath = "//mnt//h//TV//"
+rootpath = configelements['rootpath']
+print(rootpath)
+
 ncleanplex = 'ncleanplex.log'
 
 fileebad = ['idx', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'nfo', 'jpg', 'srt','txt','png','vob','ifo','bup']

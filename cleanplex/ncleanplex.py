@@ -22,15 +22,11 @@ config = configparser.ConfigParser()
 config.read("cleanplex/config.cfg")
 configelements = config['cleanplex']
 
-rootpath = "//mnt//h//TV//"
 rootpath = configelements['rootpath']
-print(rootpath)
-
-ncleanplex = 'ncleanplex.log'
-
-fileebad = ['idx', 'sfv', 'exe', 'nzb', 'sub', 'srr', 'nfo', 'jpg', 'srt','txt','png','vob','ifo','bup']
-fileegood = ['mkv', 'avi', 'mp4']
-minsizeinmb = 350
+ncleanplex = configelements['logfile']
+fileebad = configelements['badfiles']
+fileegood = configelements['goodfiles']
+minsizeinmb = configelements['minimumsizetokeep']
 
 
 ncleanplexlog = open(ncleanplex, 'w+')

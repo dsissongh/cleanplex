@@ -1,6 +1,12 @@
 import os
 import re
 
+
+def debugshow(message, debugvalue):
+	if(debugvalue):
+		print(message)
+
+
 def checkshowdir(path):
 	showdir = False
 

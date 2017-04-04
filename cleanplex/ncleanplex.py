@@ -4,6 +4,7 @@ import shutil
 import sys
 from natsort import natsorted
 
+from nfunc import debugshow
 from nfunc import checkshowdir
 from nfunc import getfileextensions
 from nfunc import getlistofpossibletitles
@@ -22,11 +23,17 @@ config = configparser.ConfigParser()
 config.read("cleanplex/config.cfg")
 configelements = config['cleanplex']
 
+debugcheck = configelements['debug']
+if debugcheck == 'True':
+	debugcheck = True
+else:
+	debugcheck = False
+
 rootpath = configelements['rootpath']
 ncleanplex = configelements['logfile']
-fileebad = configelements['badfiles']
-fileegood = configelements['goodfiles']
-minsizeinmb = configelements['minimumsizetokeep']
+fileebad = configelements['badfiles'].split(",")
+fileegood = configelements['goodfiles'].split(",")
+minsizeinmb = int(configelements['minimumsizetokeep'])
 
 
 ncleanplexlog = open(ncleanplex, 'w+')
@@ -34,7 +41,11 @@ shutil.copyfile("showtitles.txt", "showtitles.dat")
 showtitles = open("showtitles.txt", 'w+')
 notfound = open("notfound.txt", 'w+')
 
-disallowed = ['Thumbs.db', '_UNPACK_']
+disallowed = list(configelements['disallowed'].split(","))
+debugshow(fileebad[0], debugcheck)
+debugshow(fileegood[0], debugcheck)
+debugshow(disallowed[0], debugcheck)
+
 
 directory = natsorted(os.listdir(rootpath))
 validfilestopotentiallymove = 0
@@ -49,20 +60,27 @@ totalreplacesavedspace = 0
 totalrecoveredfrombadfiles = 0
 emptydirsremoved = 0
 
+
+
 allext = []
 newext = []
 sizes = []
 
-allowed = True
+
+
+debugshow("Looping", debugcheck)
 #loop through root directory
 for item in directory:
+	allowed = True
+	#make sure non of the disallowed are looped through 
 	for disallow in disallowed:
+		debugshow("Compare: " + disallow + item, debugcheck)
 		if disallow.lower() in item.lower():
 			allowed = False
 
 	if allowed:
-
 		check = checkshowdir(rootpath + item)
+		debugshow("Allowed: " + rootpath + item, debugcheck)
 		'''
 		This is the main loop - if the item is not a show directory
 		Enter this loop if the directory does not contain a Season subdirectory
@@ -70,7 +88,7 @@ for item in directory:
 		if not check:
 			
 			
-			##print("notshowdir: " + item)
+			debugshow("notshowdir: " + item, debugcheck)
 			#ncleanplexlog.write(item + "\n")
 			nonshow += 1
 

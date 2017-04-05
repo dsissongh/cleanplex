@@ -38,3 +38,5 @@
 "The.Blacklist.Redemption","The Blacklist- Redemption"
 "Untold.Stories.Of.The.E.R","Untold Stories Of The E.R"
 "penn.and.teller.fool.us","Penn & Teller Fool Us"
+"Youre.the.Worst","You're the Worst"
+"ZOO.2016","Zoo"

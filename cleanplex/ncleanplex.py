@@ -65,12 +65,13 @@ emptydirsremoved = 0
 allext = []
 newext = []
 sizes = []
-
+totalcount = 0
 
 
 debugshow("Looping", debugcheck)
 #loop through root directory
 for item in directory:
+	totalcount += 1
 	allowed = True
 	#make sure non of the disallowed are looped through 
 	for disallow in disallowed:
@@ -324,7 +325,9 @@ for item in directory:
 							print(e)
 
 					else:
-						if file[-3:].lower() in fileebad:
+						#changed to support file extensions of any size rather than just 3
+						if file[file.rfind(".")+1:].lower() in fileebad:
+							#if file[-3:].lower() in fileebad:
 							print("--" + rootpath + item + "//" + file)
 							totalrecoveredfrombadfiles += os.path.getsize(rootpath + item + "//" + file)
 							try:
@@ -364,6 +367,9 @@ sizes.sort()
 ##print(str(sizes))
 
 print("------------------------------------------------------------------------------\n")
+ncleanplexlog.write("\nTOTALCOUNT: " + str(totalcount))
+print("TOTALCOUNT: " + str(totalcount))
+
 ncleanplexlog.write("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
 print("TOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
 

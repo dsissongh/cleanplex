@@ -5,6 +5,7 @@
 "Alaska-The.Last.Frontier","Alaska the last frontier"
 "BONES (2017)","Bones"
 "Blackish","Black-ish"
+"Catfish.The.TV.Show","Catfish- The TV Show"
 "Conviction.2016","Conviction (2016)"
 "DCs.Legends.of.Tomorrow","DC's Legends of Tomorrow"
 "Dirk.Gentlys.Holistic.Detective.Agency","Dirk Gently’s Holistic Detective Agency"

@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 from natsort import natsorted
+from prettytable import PrettyTable
 
 from nfunc import debugshow
 from nfunc import checkshowdir
@@ -18,6 +19,7 @@ from nfunc import formatsize
 
 import configparser
 
+newtable = PrettyTable(['Category','Count'])
 
 config = configparser.ConfigParser()
 config.read("cleanplex/config.cfg")
@@ -328,14 +330,14 @@ for item in directory:
 						#changed to support file extensions of any size rather than just 3
 						if file[file.rfind(".")+1:].lower() in fileebad:
 							#if file[-3:].lower() in fileebad:
-							print("--" + rootpath + item + "//" + file)
+							print("delete: " + rootpath + item + "//" + file)
 							totalrecoveredfrombadfiles += os.path.getsize(rootpath + item + "//" + file)
 							try:
 								os.remove(rootpath + item + "//" + file)
 							except:
 								pass
 						else:
-							print(file + "not in bad list")
+							print(file + " not handled in bad list")
 
 
 
@@ -366,34 +368,30 @@ newext = list(set(allext))
 sizes.sort()
 ##print(str(sizes))
 
+
+newtable.add_row(['TOTALCOUNT:',str(totalcount)])
+newtable.add_row(['TOTALSHOWSPROCESSED:',str(totalshowsprocessed)])
+newtable.add_row(['MOVEIN:',str(movein)])
+newtable.add_row(['SOURCEDELETE',str(sourcedelete)])
+newtable.add_row(['SOURCESPACE:',formatsize(totalsourcespacecleaned)])
+newtable.add_row(['REPLACEIN:',str(replacein)])
+newtable.add_row(['RECLAIMEDSPACE:',formatsize(totalreplacespace - totalreplacesavedspace)])
+newtable.add_row(['RECLAIMEDFROMBAD:',formatsize(totalrecoveredfrombadfiles)])
+newtable.add_row(['EMPTYDIRSREMOVED:',str(emptydirsremoved)])
+
+
 print("------------------------------------------------------------------------------\n")
+print(newtable)
+
 ncleanplexlog.write("\nTOTALCOUNT: " + str(totalcount))
-print("TOTALCOUNT: " + str(totalcount))
-
 ncleanplexlog.write("\nTOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
-print("TOTALSHOWSPROCESSED: " + str(totalshowsprocessed))
-
 ncleanplexlog.write("\nMOVEIN: " + str(movein))
-print("MOVEIN: " + str(movein))
-
 ncleanplexlog.write("\nSOURCEDELETE: " + str(sourcedelete))
-print("SOURCEDELETE: " + str(sourcedelete))
-
 ncleanplexlog.write("\nSOURCESPACE: " + formatsize(totalsourcespacecleaned))
-print("SOURCESPACE: " + formatsize(totalsourcespacecleaned))
-
-
 ncleanplexlog.write("\nREPLACEIN: " + str(replacein))
-print("REPLACEIN: " + str(replacein))
-
 ncleanplexlog.write("\nRECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace))
-print("RECLAIMEDSPACE: " + formatsize(totalreplacespace - totalreplacesavedspace))
-
 ncleanplexlog.write("\nRECLAIMEDFROMBAD: " + formatsize(totalrecoveredfrombadfiles))
-print("RECLAIMEDFROMBAD: " + formatsize(totalrecoveredfrombadfiles))
-
 ncleanplexlog.write("\nEMPTYDIRSREMOVED: " + str(emptydirsremoved))
-print("EMPTYDIRSREMOVED: " + str(emptydirsremoved))
 
 showtitles.close()
 ncleanplexlog.close()

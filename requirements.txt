@@ -6,6 +6,7 @@ mccabe==0.5.3
 natsort==5.0.2
 packaging==16.8
 pkg-resources==0.0.0
+prettytable==0.7.2
 progressbar33==2.4
 PyBuilder==0.11.9
 pycodestyle==2.2.0

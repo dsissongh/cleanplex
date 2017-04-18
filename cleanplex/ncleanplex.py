@@ -346,7 +346,7 @@ for item in directory:
 				os.rmdir(rootpath + item)
 				emptydirsremoved += 1
 			except:
-				print(">>" + rootpath + item)
+				print("unable to remove: " + rootpath + item)
 
 			#extension = getfileextensions(rootpath + item)
 			#print(str(extension))
